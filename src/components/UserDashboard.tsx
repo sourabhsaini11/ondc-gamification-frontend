@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { NavLink, Routes, Route, Navigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { NavLink, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import {
   AppBar,
   Toolbar,
@@ -12,25 +12,37 @@ import {
   Box,
   IconButton,
 } from '@mui/material'
-import { Dashboard, UploadFile, Logout, Menu as MenuIcon, AccountCircle } from '@mui/icons-material'
+import { Dashboard, UploadFile, Logout, Menu as MenuIcon } from '@mui/icons-material'
 import FileUploadWrapper from './FileUploadWrapper'
-import Leaderboard from './Leaderboard'
+
 import { useAuth } from '../services/AuthContext'
+import Data from './ui/Data'
+
+import { User, User2Icon } from 'lucide-react'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const UserDashboard = () => {
   const { userEmail, logout } = useAuth()
   const userName = (userEmail && userEmail.split('@')[0]) || 'User'
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const location = useLocation()
+  let currentPage = location.pathname.split('/')[2]
+  const currentUser = [{
+    id: 1,
+    name: userName,
+   
+  }]
+  
 
   return (
-    <Box sx={{ display: 'flex', height: '100vh', bgcolor: '#f4f6f8' }}>
+    <Box sx={{ display: 'flex', height: '200vh', bgcolor: '#f4f6f8' }}>
       {/* Sidebar */}
       <Drawer
         variant="temporary"
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         sx={{
-          [`& .MuiDrawer-paper`]: { width: 240, bgcolor: '#4077cf', color: 'white' },
+          [`& .MuiDrawer-paper`]: { width: 300, bgcolor: '#1e3a8a', color: 'white' },
         }}
       >
         <Toolbar>
@@ -40,14 +52,22 @@ const UserDashboard = () => {
         </Toolbar>
 
         <List>
-          <NavItem to="/dashboard/upload" text="Upload" icon={<UploadFile />} />
-          <NavItem to="/dashboard/leaderboard" text="Leaderboard" icon={<Dashboard />} />
+          <NavItem  to="/dashboard/upload" active={currentPage === 'upload'} text="Upload"  icon={<UploadFile />} onClick={() => setDrawerOpen(false)}  />
+          <NavItem to="/dashboard/leaderboard" active={currentPage === 'leaderboard'}  text="Leaderboard" icon={<Dashboard />} onClick={() => setDrawerOpen(false)} />
         </List>
 
         <Box sx={{ flexGrow: 1 }} />
 
         <List>
-          <ListItem component="button" onClick={logout} sx={{ color: 'white', cursor: 'pointer' }}>
+          <ListItem component="button" onClick={logout} sx={{
+    color: 'white',
+    cursor: 'pointer',
+    backgroundColor: 'transparent',
+    borderRadius: 1,
+    '&:hover': {
+      backgroundColor: 'rgba(255, 255, 255, 0.2)', // Subtle highlight on hover
+    },
+  }}>
             <ListItemIcon>
               <Logout sx={{ color: 'white' }} />
             </ListItemIcon>
@@ -73,10 +93,19 @@ const UserDashboard = () => {
             <Box sx={{ flexGrow: 1 }} />
             {/* User Info with Icon */}
             <Box sx={{ display: 'flex', alignItems: 'center', color: 'white', ml: 'auto', gap: 1 }}>
-              <AccountCircle sx={{ fontSize: 28 }} />
-              <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                {userName}
-              </Typography>
+            <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <a>
+            <User2Icon />
+          </a>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{userName}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+             
             </Box>
           </Toolbar>
         </AppBar>
@@ -85,7 +114,8 @@ const UserDashboard = () => {
         <Box sx={{ p: 4 }}>
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard/leaderboard" />} />
-            <Route path="leaderboard" element={<Leaderboard />} />
+            {/* <Route path="leaderboard" element={<Leaderboard />} /> */}
+            <Route path="leaderboard" element={<Data />} />
             <Route path="upload" element={<FileUploadWrapper />} />
           </Routes>
         </Box>
@@ -95,11 +125,26 @@ const UserDashboard = () => {
 }
 
 // Sidebar Navigation Item Component
-const NavItem = ({ to, text, icon }: { to: string; text: string; icon: React.ReactNode }) => (
-  <ListItem component={NavLink} to={to} sx={{ color: 'inherit', textDecoration: 'none' }}>
-    <ListItemIcon>{icon}</ListItemIcon>
+const NavItem = ({ to, text, icon, active, onClick }: { to: string; text: string; icon: React.ReactNode; active: boolean, onClick: any }) => (
+  <ListItem
+    component={NavLink}
+    to={to}
+    sx={{
+      color: active ? '#fff' : '#b0c4de', 
+      textDecoration: 'none',
+      backgroundColor: active ? 'rgba(255, 255, 255, 0.2)' : 'transparent', 
+      borderRadius: 1,
+      '&:hover': {
+        backgroundColor: 'rgba(255, 255, 255, 0.1)', 
+      },
+    }}
+    onClick={onClick}
+  >
+    <ListItemIcon sx={{ color: active ? '#fff' : '#b0c4de' }}>{icon}</ListItemIcon>
     <ListItemText primary={text} />
   </ListItem>
-)
+);
+
+
 
 export default UserDashboard
