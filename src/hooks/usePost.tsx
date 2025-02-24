@@ -1,5 +1,5 @@
 import { useMutation } from 'react-query'
-import axiosInstance from 'services/axiosInstance'
+import axiosInstance from '../services/axiosInstance'
 
 interface IParams {
   url: string

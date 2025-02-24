@@ -1,22 +1,46 @@
 import { useState, ChangeEvent, FormEvent } from 'react'
-import { cn } from '@/lib/utils'
+import clsx from 'clsx' // Import clsx
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import axios from 'axios'
-import { useAuth } from '../services/AuthContext'
-import { Link } from 'react-router-dom'
+import InventoryImage from './../assets/inventoryImage.webp'
+import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom' // Import Link from react-router-dom
 
 type FormData = {
+  name: string
   email: string
   password: string
 }
 
-export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
-  const { login } = useAuth()
-  const [formData, setFormData] = useState<FormData>({ email: '', password: '' })
+export default function SignupPage() {
+  return (
+    <div className="flex min-h-screen">
+      {/* Left Side - Signup Form */}
+      <div className="flex flex-col items-center justify-center w-full sm:w-1/2 bg-blue-50 p-6">
+        <div className="flex flex-col w-full gap-6">
+          <SignupForm className="w-full" /> {/* Ensure the form takes full width */}
+        </div>
+      </div>
+
+      {/* Right Side - Image */}
+      <div className="w-1/2 flex justify-center items-center overflow-hidden">
+        <img
+          src={InventoryImage}
+          alt="Inventory"
+          className="object-cover w-full h-full" // Ensures the image covers the full area of the container
+        />
+      </div>
+    </div>
+  )
+}
+
+function SignupForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
+  const [formData, setFormData] = useState<FormData>({ name: '', email: '', password: '' })
   const [error, setError] = useState<string | null>(null)
+  const navigate = useNavigate()
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({ ...prev, [event.target.id]: event.target.value }))
@@ -27,28 +51,42 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
     setError(null)
 
     try {
-      const response = await axios.post('http://localhost:8000/api/v1/users/login', formData)
-      if (response.data.token) {
-        login(response.data.token, response.data.user)
-        // Handle login token (e.g., store in localStorage or context)
+      const response = await axios.post('http://localhost:8000/api/v1/users/register', formData) // Ensure your backend has a signup endpoint
+      console.log('response.status', response.status)
+      if (response.status === 201) {
+        navigate('/login') // Redirect to login page after successful signup
       }
     } catch (err) {
       console.log(err)
-      setError('Login failed. Please try again.')
+      setError('Signup failed. Please try again.')
     }
   }
 
   return (
-    <div className={cn('flex flex-col items-center justify-center min-h-screen w-full', className)} {...props}>
+    <div className={clsx('flex flex-col items-center justify-center min-h-screen w-full', className)} {...props}>
       <Card className="w-full max-w-md shadow-lg border border-blue-200">
         <CardHeader className="text-center bg-blue-600 text-white rounded-t-lg p-4">
-          <CardTitle className="text-xl font-bold">Sign In</CardTitle>
+          <CardTitle className="text-xl font-bold">Sign Up</CardTitle>
           {error && <p className="text-red-300">{error}</p>}
           <CardDescription className="text-blue-100">Welcome to Arambh!</CardDescription>
         </CardHeader>
         <CardContent className="bg-white p-6 rounded-b-lg">
           <form onSubmit={handleSubmit}>
             <div className="grid gap-6">
+              <div className="grid gap-2">
+                <Label htmlFor="name" className="text-blue-600">
+                  Name *
+                </Label>
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="John Doe"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                  className="border-blue-300 focus:border-blue-500 focus:ring focus:ring-blue-200"
+                />
+              </div>
               <div className="grid gap-2">
                 <Label htmlFor="email" className="text-blue-600">
                   Email *
@@ -68,9 +106,6 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
                   <Label htmlFor="password" className="text-blue-600">
                     Password *
                   </Label>
-                  <a href="#" className="ml-auto text-sm text-blue-500 underline-offset-4 hover:underline">
-                    Forgot your password?
-                  </a>
                 </div>
                 <Input
                   id="password"
@@ -81,30 +116,25 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
                   className="border-blue-300 focus:border-blue-500 focus:ring focus:ring-blue-200"
                 />
               </div>
-              <div className="flex items-center">
-                <input type="checkbox" id="rememberMe" className="mr-2" />
-                <Label htmlFor="rememberMe" className="text-blue-600 text-sm">
-                  Remember Me
-                </Label>
-              </div>
               <Button
                 type="submit"
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full transition"
               >
-                Sign In
+                Sign Up
               </Button>
             </div>
           </form>
+          {/* Link to Login page */}
+          <div className="mt-4 text-center">
+            <p className="">
+              Already have an account?{' '}
+              <Link to="/login" className="text-blue-700 hover:underline">
+                Log in here
+              </Link>
+            </p>
+          </div>
         </CardContent>
       </Card>
-      <div className="mt-4 text-center">
-        <p className="">
-          Don't have an account{' '}
-          <Link to="/signup" className="text-blue-700 hover:underline">
-            Create an account
-          </Link>
-        </p>
-      </div>
     </div>
   )
 }

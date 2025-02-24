@@ -1,5 +1,5 @@
 import { useQuery } from 'react-query'
-import axiosInstance from 'services/axiosInstance'
+import axiosInstance from '../services/axiosInstance'
 
 const useGet = (key: string, url: string, configs?: any) => {
   const get = async () => {

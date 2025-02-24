@@ -1,60 +1,56 @@
-import { useState, ChangeEvent, FormEvent } from "react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
+import { useState, ChangeEvent, FormEvent } from 'react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { useToast } from '@/hooks/use-toast'
 
-import { useMutation } from "react-query";
-import { login } from "@/http/route";
-import { Loader2 } from "lucide-react";
+import { useMutation } from 'react-query'
+import { login } from '@/http/route'
+import { Loader2 } from 'lucide-react'
 
 type FormData = {
-  email: string;
-  password: string;
-};
+  email: string
+  password: string
+}
 
-export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<"div">) {
-  const [formData, setFormData] = useState<FormData>({ email: "", password: "" });
+export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
+  const [formData, setFormData] = useState<FormData>({ email: '', password: '' })
   const loginMutation = useMutation({
     mutationFn: login,
     onSuccess: (response) => {
       toast({
-        title: "Success",
-        description: response.message || "Login successful",
-        
-      });
-     
+        title: 'Success',
+        description: response.message || 'Login successful',
+      })
     },
     onError: (error: any) => {
       toast({
-        title: "Error",
-        description:
-          error.response?.data?.message || "Network error or server issue",
-        variant: "destructive",
-      });
+        title: 'Error',
+        description: error.response?.data?.message || 'Network error or server issue',
+        variant: 'destructive',
+      })
     },
   })
-  
+
   const { toast } = useToast()
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setFormData((prev) => ({ ...prev, [event.target.id]: event.target.value }));
-  };
+    setFormData((prev) => ({ ...prev, [event.target.id]: event.target.value }))
+  }
 
-  const handleSubmit = async(event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
     loginMutation.mutate(formData)
-  };
-
+  }
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className={cn('flex flex-col gap-6', className)} {...props}>
       <Card>
         <CardHeader className="text-center">
           <CardTitle className="text-xl">Welcome back</CardTitle>
-          <CardDescription>Login with your Apple or Google account</CardDescription>
+          <CardDescription>Login with your Email account</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit}>
@@ -77,19 +73,15 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
                     Forgot your password?
                   </a>
                 </div>
-                <Input
-                  id="password"
-                  type="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                />
+                <Input id="password" type="password" value={formData.password} onChange={handleChange} required />
               </div>
-              <Button type="submit" className="w-full" disabled={loginMutation.isLoading}>{loginMutation.isLoading ? <Loader2 className="animate-spin" /> : 'Login'}</Button>
+              <Button type="submit" className="w-full" disabled={loginMutation.isLoading}>
+                {loginMutation.isLoading ? <Loader2 className="animate-spin" /> : 'Login'}
+              </Button>
             </div>
           </form>
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }
