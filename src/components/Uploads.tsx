@@ -22,7 +22,7 @@ const UserUploads = () => {
     const fetchUploads = async () => {
       try {
         const token = localStorage.getItem('token')
-        const res = await axios.get(`http://localhost:8000/api/v1/orders/uploads?page=${page}&limit=10`, {
+        const res = await axios.get(`https://gamafication-node-backend-dev.thewitslab.com/api/v1/orders/uploads?page=${page}&limit=10`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         setUploads(res.data.data)

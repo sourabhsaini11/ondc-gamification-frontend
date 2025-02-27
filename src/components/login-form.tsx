@@ -27,7 +27,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
     setError(null)
 
     try {
-      const response = await axios.post('http://localhost:8000/api/v1/users/login', formData)
+      const response = await axios.post('https://gamafication-node-backend-dev.thewitslab.com/api/v1/users/login', formData)
       if (response.data.token) {
         login(response.data.token, response.data.user)
         // Handle login token (e.g., store in localStorage or context)

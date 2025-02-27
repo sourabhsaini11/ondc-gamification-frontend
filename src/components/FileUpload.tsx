@@ -45,7 +45,7 @@ const FileUpload = () => {
       setUploading(true)
       setMessage('')
       const token = localStorage.getItem('token')
-      const response = await axios.post('http://localhost:8000/api/v1/orders/upload-csv', formData, {
+      const response = await axios.post('https://gamafication-node-backend-dev.thewitslab.com/api/v1/orders/upload-csv', formData, {
         headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` },
       })
 

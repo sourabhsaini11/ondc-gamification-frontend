@@ -51,7 +51,7 @@ function SignupForm({ className, ...props }: React.ComponentPropsWithoutRef<'div
     setError(null)
 
     try {
-      const response = await axios.post('http://localhost:8000/api/v1/users/register', formData) // Ensure your backend has a signup endpoint
+      const response = await axios.post('https://gamafication-node-backend-dev.thewitslab.com/api/v1/users/register', formData) // Ensure your backend has a signup endpoint
       console.log('response.status', response.status)
       if (response.status === 201) {
         navigate('/login') // Redirect to login page after successful signup

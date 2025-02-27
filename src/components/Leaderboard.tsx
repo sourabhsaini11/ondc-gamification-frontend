@@ -13,9 +13,9 @@ const Leaderboard = () => {
     const fetchLeaderboards = async () => {
       try {
         const [dailyRes, weeklyRes, monthlyRes] = await Promise.all([
-          axios.get('http://localhost:8000/api/v1/orders/daily-leaderboard'),
-          axios.get('http://localhost:8000/api/v1/orders/week-leaderboard'),
-          axios.get('http://localhost:8000/api/v1/orders/month-leaderboard'),
+          axios.get('https://gamafication-node-backend-dev.thewitslab.com/api/v1/orders/daily-leaderboard'),
+          axios.get('https://gamafication-node-backend-dev.thewitslab.com/api/v1/orders/week-leaderboard'),
+          axios.get('https://gamafication-node-backend-dev.thewitslab.com/api/v1/orders/month-leaderboard'),
         ])
 
         setDailyLeaderboard(dailyRes.data.data.body)
