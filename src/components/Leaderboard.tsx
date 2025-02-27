@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography } from '@mui/material'
-import { ChevronsUpDown, ChevronUp, ChevronDown, Trophy } from 'lucide-react'
+import {  ChevronUp, ChevronDown, Trophy } from 'lucide-react'
 
 const mockData = [
   { id: 1, game_id: 'Game123', total_points: 1500, total_orders: 30, total_gmv: 50000 },
@@ -15,27 +15,27 @@ const Leaderboard = () => {
   const [monthlyLeaderboard, setMonthlyLeaderboard] = useState(mockData)
   const [loading, setLoading] = useState(false)
 
-  // useEffect(() => {
-  //   const fetchLeaderboards = async () => {
-  //     try {
-  //       const [dailyRes, weeklyRes, monthlyRes] = await Promise.all([
-  //         axios.get('http://localhost:8000/api/v1/orders/daily-leaderboard'),
-  //         axios.get('http://localhost:8000/api/v1/orders/week-leaderboard'),
-  //         axios.get('http://localhost:8000/api/v1/orders/month-leaderboard'),
-  //       ])
+  useEffect(() => {
+    const fetchLeaderboards = async () => {
+      try {
+        const [dailyRes, weeklyRes, monthlyRes] = await Promise.all([
+          axios.get('https://gamafication-node-backend-dev.thewitslab.com/api/v1/orders/daily-leaderboard'),
+          axios.get('https://gamafication-node-backend-dev.thewitslab.com/api/v1/orders/week-leaderboard'),
+          axios.get('https://gamafication-node-backend-dev.thewitslab.com/api/v1/orders/month-leaderboard'),
+        ])
 
-  //       setDailyLeaderboard(dailyRes.data.data.body)
-  //       setWeeklyLeaderboard(weeklyRes.data.data.body)
-  //       setMonthlyLeaderboard(monthlyRes.data.data.body)
-  //     } catch (error) {
-  //       console.error('Error fetching leaderboards:', error)
-  //     } finally {
-  //       setLoading(false)
-  //     }
-  //   }
+        setDailyLeaderboard(dailyRes.data.data.body)
+        setWeeklyLeaderboard(weeklyRes.data.data.body)
+        setMonthlyLeaderboard(monthlyRes.data.data.body)
+      } catch (error) {
+        console.error('Error fetching leaderboards:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
 
-  //   fetchLeaderboards()
-  // }, [])
+    fetchLeaderboards()
+  }, [])
 
   return (
     <Paper sx={{ p: 4, maxWidth: '80%', mx: 'auto', boxShadow: 3, borderRadius: 2 }}>
@@ -84,7 +84,7 @@ const LeaderboardSection = ({ title, data }: { title: string; data: any[] }) => 
             </TableHead>
             <TableBody>
               {data.length > 0 ? (
-                data.map((user: any, index) => (
+                data?.map((user: any, index) => (
                   <TableRow key={user.id} sx={{ bgcolor: index % 2 === 0 ? '#F0F4FF' : 'white' }}>
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>{user.game_id}</TableCell>

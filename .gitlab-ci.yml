@@ -1,4 +1,37 @@
-include:
-  - https://gitlab.thewitslab.com/api/v4/projects/415/repository/files/react.yml/raw?ref=main&private_token=$Boilerplate_Pipeline&.yaml
+#include:
+#  - https://gitlab.thewitslab.com/api/v4/projects/415/repository/files/react.yml/raw?ref=main&private_token=$Boilerplate_Pipeline&.yaml
+
+#include:
+ # - https://gitlab.thewitslab.com/api/v4/projects/391/repository/files/node.yml/raw?ref=main&private_token=$Boilerplate_Pipeline&.yaml
+stages:
+  - dev
+
+deploy-dev:      
+  stage: dev
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "feat/dockerise-frontend"'
+      when: manual
+    - when: never
+  environment: dev
+  tags:
+    - gcp
+  script:
+    - echo "Starting Dev Deployment on Compute Engine."
+    - |
+      sshpass -p $ONDC_GAMIFICATION_PASSWORD ssh -tt $Default_Username@$ONDC_GAMIFICATION_HOST "
+        if [[ -d gamafication-react-frontend ]]; then
+          cd gamafication-react-frontend
+          docker-compose down
+          cd && rm -rf gamafication-react-frontend
+        fi "
+    - Path=$(pwd)
+    - bash -c '(cd /home/ubuntu/script && ./env_script.sh vault-name '$VAULT_TOKEN' > /dev/null)'
+    - mv /home/ubuntu/script/.env $Path && cd $Path
+    - sshpass -p $ONDC_GAMIFICATION_PASSWORD ssh -tt $Default_Username@$ONDC_GAMIFICATION_HOST "git clone -b feat/dockerise-frontend https://user:$GITLAB_ACCESS_TOKEN@gitlab.thewitslab.com/wil-workspace/WIL-ONDC-Products/gamafication-react-frontend.git"
+    - sshpass -p $ONDC_GAMIFICATION_PASSWORD scp .env $Default_Username@$ONDC_GAMIFICATION_HOST:/home/$Default_Username/gamafication-react-frontend
+    - sshpass -p $ONDC_GAMIFICATION_PASSWORD ssh -tt $Default_Username@$ONDC_GAMIFICATION_HOST "cd gamafication-react-frontend && docker-compose up -d --build"
+    - echo "Hosted_URL":"https://gamafication-react-frontend-dev.thewitslab.com"
+    - echo "Deployment Completed for gamafication-react-frontend, Environment- Dev."
+
 
 
