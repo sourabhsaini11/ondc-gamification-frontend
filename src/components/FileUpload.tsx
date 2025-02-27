@@ -37,6 +37,7 @@ const FileUpload = () => {
       setMessage('❌ Please select a valid CSV file.')
       return
     }
+    
 
     const formData = new FormData()
     formData.append('file', file)
@@ -45,7 +46,7 @@ const FileUpload = () => {
       setUploading(true)
       setMessage('')
       const token = localStorage.getItem('token')
-      const response = await axios.post('https://gamafication-node-backend-dev.thewitslab.com/api/v1/orders/upload-csv', formData, {
+      const response = await axios.post(`${import.meta.env.BACKEND_URI}/api/v1/orders/upload-csv`, formData, {
         headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` },
       })
 

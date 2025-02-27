@@ -4,46 +4,60 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import axios from 'axios'
 import { useAuth } from '../services/AuthContext'
 import { Link } from 'react-router-dom'
+import {  Loader2 } from 'lucide-react'
+import { useMutation } from 'react-query'
+import { useToast } from '@/hooks/use-toast'
+import { loginAPI } from '@/http/route' 
+import { LoginFormData } from '@/types'
 
-type FormData = {
-  email: string
-  password: string
-}
+
 
 export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
   const { login } = useAuth()
-  const [formData, setFormData] = useState<FormData>({ email: '', password: '' })
-  const [error, setError] = useState<string | null>(null)
+  const { toast } = useToast()
+  const [formData, setFormData] = useState<LoginFormData>({ email: '', password: '' })
+  const loginMutation = useMutation({
+    mutationFn: loginAPI,
+    onSuccess: (response) => {
+      if (response?.token) {
+        login(response?.token, response?.user)
+      }
+      toast({
+        title: "Success",
+        description: response.message || "Login successful",
+        variant: 'success'
+        
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description:
+          error.response?.data?.error || "Network error or server issue",
+        variant: "destructive",
+      });
+    },
+  })
+
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({ ...prev, [event.target.id]: event.target.value }))
   }
+  const handleSubmit = async(event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    loginMutation.mutate(formData)
+  };
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    setError(null)
 
-    try {
-      const response = await axios.post('https://gamafication-node-backend-dev.thewitslab.com/api/v1/users/login', formData)
-      if (response.data.token) {
-        login(response.data.token, response.data.user)
-        // Handle login token (e.g., store in localStorage or context)
-      }
-    } catch (err) {
-      console.log(err)
-      setError('Login failed. Please try again.')
-    }
-  }
 
   return (
     <div className={cn('flex flex-col items-center justify-center min-h-screen w-full', className)} {...props}>
       <Card className="w-full max-w-md shadow-lg border border-blue-200">
         <CardHeader className="text-center bg-blue-600 text-white rounded-t-lg p-4">
           <CardTitle className="text-xl font-bold">Sign In</CardTitle>
-          {error && <p className="text-red-300">{error}</p>}
+       
           <CardDescription className="text-blue-100">Welcome to Arambh!</CardDescription>
         </CardHeader>
         <CardContent className="bg-white p-6 rounded-b-lg">
@@ -89,9 +103,10 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
               </div>
               <Button
                 type="submit"
+                disabled={loginMutation.isLoading}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full transition"
               >
-                Sign In
+               {loginMutation.isLoading ? <Loader2 className='animate-spin' /> : 'Sign In'} 
               </Button>
             </div>
           </form>
