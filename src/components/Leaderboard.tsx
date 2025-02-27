@@ -13,29 +13,29 @@ const Leaderboard = () => {
   const [dailyLeaderboard, setDailyLeaderboard] = useState(mockData)
   const [weeklyLeaderboard, setWeeklyLeaderboard] = useState(mockData)
   const [monthlyLeaderboard, setMonthlyLeaderboard] = useState(mockData)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    const fetchLeaderboards = async () => {
-      try {
-        const [dailyRes, weeklyRes, monthlyRes] = await Promise.all([
-          axios.get('http://localhost:8000/api/v1/orders/daily-leaderboard'),
-          axios.get('http://localhost:8000/api/v1/orders/week-leaderboard'),
-          axios.get('http://localhost:8000/api/v1/orders/month-leaderboard'),
-        ])
+  // useEffect(() => {
+  //   const fetchLeaderboards = async () => {
+  //     try {
+  //       const [dailyRes, weeklyRes, monthlyRes] = await Promise.all([
+  //         axios.get('http://localhost:8000/api/v1/orders/daily-leaderboard'),
+  //         axios.get('http://localhost:8000/api/v1/orders/week-leaderboard'),
+  //         axios.get('http://localhost:8000/api/v1/orders/month-leaderboard'),
+  //       ])
 
-        setDailyLeaderboard(dailyRes.data.data.body)
-        setWeeklyLeaderboard(weeklyRes.data.data.body)
-        setMonthlyLeaderboard(monthlyRes.data.data.body)
-      } catch (error) {
-        console.error('Error fetching leaderboards:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
+  //       setDailyLeaderboard(dailyRes.data.data.body)
+  //       setWeeklyLeaderboard(weeklyRes.data.data.body)
+  //       setMonthlyLeaderboard(monthlyRes.data.data.body)
+  //     } catch (error) {
+  //       console.error('Error fetching leaderboards:', error)
+  //     } finally {
+  //       setLoading(false)
+  //     }
+  //   }
 
-    fetchLeaderboards()
-  }, [])
+  //   fetchLeaderboards()
+  // }, [])
 
   return (
     <Paper sx={{ p: 4, maxWidth: '80%', mx: 'auto', boxShadow: 3, borderRadius: 2 }}>

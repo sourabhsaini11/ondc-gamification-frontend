@@ -37,6 +37,7 @@ const FileUpload = () => {
       setMessage('❌ Please select a valid CSV file.')
       return
     }
+    
 
     const formData = new FormData()
     formData.append('file', file)
