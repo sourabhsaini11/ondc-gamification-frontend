@@ -6,5 +6,6 @@ services:
     ports:
       - 5173:5173
     restart: always
-    env_file: 
-      - .env
+    environment:
+      VITE_BACKEND_URI: https://gamafication-node-backend-dev.thewitslab.com
+
