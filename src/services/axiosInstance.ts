@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const instance = axios.create({
-  baseURL: 'https://gamafication-node-backend-dev.thewitslab.com/api/v1',
+  baseURL:  `${import.meta.env.BACKEND_URI}`,
 })
 
 export default instance
