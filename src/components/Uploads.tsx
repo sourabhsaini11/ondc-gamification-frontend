@@ -1,5 +1,4 @@
 import  { useEffect, useState } from 'react'
-import axios from 'axios'
 import {
   Table,
   TableBody,
@@ -11,6 +10,7 @@ import {
   Button,
   Typography,
 } from '@mui/material'
+import axiosInstance from '@/lib/axiosInstance'
 
 const UserUploads = () => {
   const [uploads, setUploads] = useState([])
@@ -22,7 +22,7 @@ const UserUploads = () => {
     const fetchUploads = async () => {
       try {
         const token = localStorage.getItem('token')
-        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/api/v1/orders/uploads?page=${page}&limit=10`, {
+        const res = await axiosInstance.get(`/api/v1/orders/uploads?page=${page}&limit=10`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         setUploads(res.data.data)

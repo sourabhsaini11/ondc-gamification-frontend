@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography } from '@mui/material'
 import {  ChevronUp, ChevronDown, Trophy } from 'lucide-react'
+import axiosInstance from '@/lib/axiosInstance'
 
 const mockData = [
   { id: 1, game_id: 'Game123', total_points: 1500, total_orders: 30, total_gmv: 50000 },
@@ -17,11 +17,12 @@ const Leaderboard = () => {
 
   useEffect(() => {
     const fetchLeaderboards = async () => {
+      console.log('envvv:', import.meta.env.VITE_BACKEND_URI)
       try {
         const [dailyRes, weeklyRes, monthlyRes] = await Promise.all([
-          axios.get(`${import.meta.env.VITE_BACKEND_URI}/api/v1/orders/week-leaderboard`),
-          axios.get(`${import.meta.env.VITE_BACKEND_URI}/api/v1/orders/daily-leaderboard`),
-          axios.get(`${import.meta.env.VITE_BACKEND_URI}/api/v1/orders/month-leaderboard`),
+          axiosInstance.get(`/api/v1/orders/week-leaderboard`),
+          axiosInstance.get(`/api/v1/orders/daily-leaderboard`),
+          axiosInstance.get(`/api/v1/orders/month-leaderboard`),
         ])
 
         setDailyLeaderboard(dailyRes.data.data.body)
