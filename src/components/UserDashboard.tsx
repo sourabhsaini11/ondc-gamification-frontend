@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { NavLink, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import {
   AppBar,
@@ -18,7 +18,7 @@ import FileUploadWrapper from './FileUploadWrapper'
 import { useAuth } from '../services/AuthContext'
 import Data from './ui/Data'
 
-import { User, User2Icon } from 'lucide-react'
+import {  User2Icon } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const UserDashboard = () => {
@@ -27,11 +27,7 @@ const UserDashboard = () => {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const location = useLocation()
   let currentPage = location.pathname.split('/')[2]
-  const currentUser = [{
-    id: 1,
-    name: userName,
-   
-  }]
+
   
 
   return (
