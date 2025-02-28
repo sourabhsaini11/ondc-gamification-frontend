@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const instance = axios.create({
-  baseURL:  `${import.meta.env.BACKEND_URI}`,
+  baseURL:  `${import.meta.env.VITE_BACKEND_URI}`,
 })
 
 export default instance

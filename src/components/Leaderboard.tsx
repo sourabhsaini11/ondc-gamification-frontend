@@ -19,9 +19,9 @@ const Leaderboard = () => {
     const fetchLeaderboards = async () => {
       try {
         const [dailyRes, weeklyRes, monthlyRes] = await Promise.all([
-          axios.get(`${import.meta.env.BACKEND_URI}/api/v1//orders/daily-leaderboard`),
-          axios.get(`${import.meta.env.BACKEND_URI}/api/v1//orders/week-leaderboard`),
-          axios.get(`${import.meta.env.BACKEND_URI}/api/v1//orders/month-leaderboard`),
+          axios.get(`${import.meta.env.VITE_BACKEND_URI}/api/v1/orders/week-leaderboard`),
+          axios.get(`${import.meta.env.VITE_BACKEND_URI}/api/v1/orders/daily-leaderboard`),
+          axios.get(`${import.meta.env.VITE_BACKEND_URI}/api/v1/orders/month-leaderboard`),
         ])
 
         setDailyLeaderboard(dailyRes.data.data.body)
