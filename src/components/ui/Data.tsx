@@ -1,5 +1,5 @@
 import { Paper, Typography, Box, Card, CardContent, CardHeader, IconButton, Stack } from '@mui/material';
-import { Gamepad2Icon, Trophy } from 'lucide-react';
+import { Gamepad2Icon } from 'lucide-react';
 import { GiPresent, GiLaurelsTrophy, GiGuitar, GiDiploma } from 'react-icons/gi'; // You can use any icon library
 import Leaderboard from '../Leaderboard';
 
