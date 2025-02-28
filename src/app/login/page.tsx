@@ -1,9 +1,8 @@
 import { LoginForm } from '@/components/LoginForm'
 import InventoryImage from '../../assets/inventoryImage.webp'
-import { useLocation } from 'react-router-dom'
 
 export default function LoginPage() {
-  const location = useLocation()
+
   
   return (
     <div className="flex min-h-screen">
