@@ -1,4 +1,5 @@
-import  { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
 import {
   Table,
   TableBody,
@@ -10,19 +11,18 @@ import {
   Button,
   Typography,
 } from '@mui/material'
-import axiosInstance from '@/lib/axiosInstance'
 
 const UserUploads = () => {
-  const [uploads, setUploads] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [page, setPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(1)
+  const [uploads, setUploads] = useState<any[]>([])
+  const [loading, setLoading] = useState<any>(true)
+  const [page, setPage] = useState<any>(1)
+  const [totalPages, setTotalPages] = useState<any>(1)
 
   useEffect(() => {
     const fetchUploads = async () => {
       try {
         const token = localStorage.getItem('token')
-        const res = await axiosInstance.get(`/api/v1/orders/uploads?page=${page}&limit=10`, {
+        const res = await axios.get(`/api/v1/orders/uploads?page=${page}&limit=10`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         setUploads(res.data.data)
@@ -47,7 +47,7 @@ const UserUploads = () => {
         <Typography textAlign="center" color="gray">
           Loading uploaded data...
         </Typography>
-      ) : (
+      ) : uploads.length > 0 ? (
         <>
           <TableContainer component={Paper} sx={{ borderRadius: 2 }}>
             <Table>
@@ -58,7 +58,7 @@ const UserUploads = () => {
                       <TableCell key={header} sx={{ color: 'white', fontWeight: 'bold' }}>
                         {header}
                       </TableCell>
-                    ),
+                    )
                   )}
                 </TableRow>
               </TableHead>
@@ -79,9 +79,12 @@ const UserUploads = () => {
               </TableBody>
             </Table>
           </TableContainer>
-
           <PaginationControls page={page} totalPages={totalPages} setPage={setPage} />
         </>
+      ) : (
+        <Typography textAlign="center" color="gray">
+          No uploads available.
+        </Typography>
       )}
     </Paper>
   )
