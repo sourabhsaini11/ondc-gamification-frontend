@@ -24,17 +24,18 @@ const Leaderboard = () => {
         console.error('Error fetching monthly leaderboard:', error)
       }
     }
-  
+    
     fetchMonthlyLeaderboard()
   }, [])
 
   useEffect(() => {
-    if (!selectedDailyDate) return
-
     const fetchDailyLeaderboard = async () => {
       setLoadingDaily(true)
       try {
-        const res = await axiosInstance.get(`/api/v1/orders/daily-leaderboard?date=${selectedDailyDate.toISOString().split('T')[0]}`)
+        const url = selectedDailyDate 
+          ? `/api/v1/orders/daily-leaderboard?date=${selectedDailyDate.toISOString().split('T')[0]}`
+          : `/api/v1/orders/daily-leaderboard`
+        const res = await axiosInstance.get(url)
         setDailyLeaderboard(res.data.data.body)
       } catch (error) {
         console.error('Error fetching daily leaderboard:', error)
@@ -47,12 +48,13 @@ const Leaderboard = () => {
   }, [selectedDailyDate])
 
   useEffect(() => {
-    if (!selectedWeeklyDate) return
-
     const fetchWeeklyLeaderboard = async () => {
       setLoadingWeekly(true)
       try {
-        const res = await axiosInstance.get(`/api/v1/orders/week-leaderboard?date=${selectedWeeklyDate.toISOString().split('T')[0]}`)
+        const url = selectedWeeklyDate 
+          ? `/api/v1/orders/week-leaderboard?date=${selectedWeeklyDate.toISOString().split('T')[0]}`
+          : `/api/v1/orders/week-leaderboard`
+        const res = await axiosInstance.get(url)
         setWeeklyLeaderboard(res.data.data.body)
       } catch (error) {
         console.error('Error fetching weekly leaderboard:', error)
@@ -79,20 +81,22 @@ const Leaderboard = () => {
   )
 }
 
-const LeaderboardSection = ({ title, data, setSelectedDate, loading }: { title: string; data: any[]; setSelectedDate?: (date: Date) => void; loading: boolean }) => {
+const LeaderboardSection = ({ title, data, setSelectedDate, loading }: { title: string; data: any[]; setSelectedDate?: (date: Date | null) => void; loading: boolean }) => {
   const [expanded, setExpanded] = useState(true)
 
   return (
     <div className="bg-blue-50 p-6 rounded-xl shadow-md border border-blue-200">
-      <Typography variant="h6" sx={{ color: '#4077cf', fontWeight: 'bold', textAlign: 'center', mb: 3 }}>
-        <div className="flex justify-between items-center cursor-pointer" onClick={() => setExpanded(!expanded)}>
-          <span>{title}</span>
-          <div className="flex justify-end gap-4 flex-1">
-            {['Daily Leaderboard', 'Weekly Leaderboard'].includes(title) && setSelectedDate && <DatePickerDemo setSelectedDate={setSelectedDate} />}
+      <div className="flex justify-between items-center mb-4">
+        <Typography variant="h6" sx={{ color: '#4077cf', fontWeight: 'bold' }}>
+          {title}
+        </Typography>
+        <div className="flex justify-end gap-4 ">
+          {['Daily Leaderboard', 'Weekly Leaderboard'].includes(title) && setSelectedDate && <DatePickerDemo isWeek={title === 'Daily Leaderboard' ? false : true} setSelectedDate={setSelectedDate} />}
+          <div className="cursor-pointer" onClick={() => setExpanded(!expanded)}>
             {expanded ? <ChevronUp /> : <ChevronDown />}
           </div>
         </div>
-      </Typography>
+      </div>
       {expanded && (
         <>
           {loading ? (

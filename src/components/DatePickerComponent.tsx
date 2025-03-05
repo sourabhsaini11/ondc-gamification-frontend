@@ -13,7 +13,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-export function DatePickerDemo({ setSelectedDate }: { setSelectedDate: (date: Date) => void }) {
+export function DatePickerDemo({ setSelectedDate, isWeek }: { setSelectedDate: (date: Date) => void, isWeek : boolean }) {
     const [date, setDate] = React.useState<Date>()
   
     return (
@@ -24,7 +24,7 @@ export function DatePickerDemo({ setSelectedDate }: { setSelectedDate: (date: Da
             className={cn("w-[300px] justify-start text-left font-normal", !date && "text-muted-foreground")}
           >
             <CalendarIcon />
-            {date ? format(date, "PPP") : <span>Pick a date</span>}
+            {date ? format(date, "PPP") : <span>{isWeek ? 'Pick start of week' : 'Pick a date'} </span>}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
