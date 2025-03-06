@@ -22,7 +22,7 @@ const UserUploads = () => {
     const fetchUploads = async () => {
       try {
         const token = localStorage.getItem('token')
-        const res = await axios.get(`/api/v1/orders/uploads?page=${page}&limit=10`, {
+        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/api/v1/orders/uploads?page=${page}&limit=10`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         setUploads(res.data.data)
@@ -53,27 +53,39 @@ const UserUploads = () => {
             <Table>
               <TableHead sx={{ bgcolor: '#4077cf' }}>
                 <TableRow>
-                  {['Order ID', 'Name', 'Category', 'Buyer', 'Seller', 'Base Price', 'Discount', 'Status', 'Phone'].map(
-                    (header) => (
-                      <TableCell key={header} sx={{ color: 'white', fontWeight: 'bold' }}>
-                        {header}
-                      </TableCell>
-                    )
-                  )}
+                  {[
+                    'Game ID',
+                    'Order ID',
+                    'Name',
+                    'Domain',
+                    'Buyer',
+                    'Base Price',
+                    'Discount',
+                    'Status',
+                    'Phone',
+                    'Points',
+                    'Timestamp updated',
+                  ].map((header) => (
+                    <TableCell key={header} sx={{ color: 'white', fontWeight: 'bold' }}>
+                      {header}
+                    </TableCell>
+                  ))}
                 </TableRow>
               </TableHead>
               <TableBody>
                 {uploads.map((order: any, index) => (
                   <TableRow key={order.id} sx={{ bgcolor: index % 2 === 0 ? '#fafafa' : 'white' }}>
+                    <TableCell>{order.game_id.slice(0, 7)}</TableCell>
                     <TableCell>{order.order_id}</TableCell>
                     <TableCell>{order.name}</TableCell>
-                    <TableCell>{order.category}</TableCell>
+                    <TableCell>{order.domain}</TableCell>
                     <TableCell>{order.buyer_app_id}</TableCell>
-                    <TableCell>{order.seller_id}</TableCell>
                     <TableCell>{order.base_price}</TableCell>
                     <TableCell>{order.discount}</TableCell>
                     <TableCell>{order.order_status}</TableCell>
                     <TableCell>{order.uid}</TableCell>
+                    <TableCell>{order.points}</TableCell>
+                    <TableCell>{order.timestamp_updated}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

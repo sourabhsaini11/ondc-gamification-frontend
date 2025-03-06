@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography } from '@mui/material'
-import {  ChevronUp, ChevronDown, Trophy } from 'lucide-react'
+import { ChevronUp, ChevronDown, Trophy } from 'lucide-react'
 
 const mockData = [
   { id: 1, game_id: 'Game123', total_points: 1500, total_orders: 30, total_gmv: 50000 },
@@ -20,8 +20,8 @@ const Leaderboard = () => {
       console.log('envvv:', import.meta.env.VITE_BACKEND_URI)
       try {
         const [dailyRes, weeklyRes, monthlyRes] = await Promise.all([
-          axios.get(`${import.meta.env.VITE_BACKEND_URI}/api/v1/orders/week-leaderboard`),
           axios.get(`${import.meta.env.VITE_BACKEND_URI}/api/v1/orders/daily-leaderboard`),
+          axios.get(`${import.meta.env.VITE_BACKEND_URI}/api/v1/orders/week-leaderboard`),
           axios.get(`${import.meta.env.VITE_BACKEND_URI}/api/v1/orders/month-leaderboard`),
         ])
 
@@ -42,7 +42,7 @@ const Leaderboard = () => {
     <Paper sx={{ p: 4, maxWidth: '80%', mx: 'auto', boxShadow: 3, borderRadius: 2 }}>
       <Typography variant="h4" sx={{ textAlign: 'center', fontWeight: 'bold', mb: 3, color: '#4077cf' }}>
         <Trophy className="inline-block mr-2 text-yellow-500" style={{ height: '2.5rem', width: '2.5rem' }} />{' '}
-        Leaderboards 
+        Leaderboards
       </Typography>
 
       {loading ? (
@@ -62,6 +62,8 @@ const Leaderboard = () => {
 
 const LeaderboardSection = ({ title, data }: { title: string; data: any[] }) => {
   const [expanded, setExpanded] = useState(true)
+
+  console.log('data', data)
 
   return (
     <div className="bg-blue-50 p-6 rounded-xl shadow-md border border-blue-200">
@@ -84,11 +86,11 @@ const LeaderboardSection = ({ title, data }: { title: string; data: any[] }) => 
               </TableRow>
             </TableHead>
             <TableBody>
-              {data.length > 0 ? (
+              {data && data.length > 0 ? (
                 data?.map((user: any, index) => (
                   <TableRow key={user.id} sx={{ bgcolor: index % 2 === 0 ? '#F0F4FF' : 'white' }}>
                     <TableCell>{index + 1}</TableCell>
-                    <TableCell>{user.game_id}</TableCell>
+                    <TableCell>{user.game_id.slice(0, 7)}</TableCell>
                     <TableCell>{user.total_points}</TableCell>
                     <TableCell>{user.total_orders}</TableCell>
                     <TableCell>{user.total_gmv}</TableCell>

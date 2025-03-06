@@ -109,7 +109,7 @@ const UserDashboard = () => {
         {/* Page Content */}
         <Box sx={{ p: 4 }}>
           <Routes>
-            <Route path="/" element={<Navigate to="/dashboard/leaderboard" />} />
+            <Route path="/" element={<Navigate to="/dashboard/upload" />} />
             {/* <Route path="leaderboard" element={<Leaderboard />} /> */}
             <Route path="leaderboard" element={<Data />} />
             <Route path="upload" element={<FileUploadWrapper />} />

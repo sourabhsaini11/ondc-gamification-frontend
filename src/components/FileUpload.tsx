@@ -37,7 +37,6 @@ const FileUpload = () => {
       setMessage('❌ Please select a valid CSV file.')
       return
     }
-    
 
     const formData = new FormData()
     formData.append('file', file)
@@ -52,8 +51,8 @@ const FileUpload = () => {
 
       console.log('Upload Success:', response)
       setMessage('✅ File uploaded successfully!')
-    } catch (error) {
-      setMessage('❌ Error uploading file.')
+    } catch (error: any) {
+      setMessage(`❌ Error uploading file. ${error?.response?.data?.message || ''}`)
       console.error(error)
     } finally {
       setUploading(false)

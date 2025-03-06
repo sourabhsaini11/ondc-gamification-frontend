@@ -1,7 +1,8 @@
 import axios from 'axios'
 
 const axiosInstance = axios.create({
-  baseURL: `https://gamafication-node-backend-dev.thewitslab.com`,
+  // baseURL: `https://gamafication-node-backend-dev.thewitslab.com`,
+  baseURL: `http://localhost:8000`,
   headers: {
     'Content-Type': 'application/json',
   },
