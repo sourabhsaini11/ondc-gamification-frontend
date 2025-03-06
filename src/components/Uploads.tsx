@@ -9,14 +9,16 @@ import {
   Paper,
   Button,
   Typography,
+  Box,
 } from '@mui/material'
 import axiosInstance from '@/lib/axiosInstance'
+import { Download } from 'lucide-react'
 
 const UserUploads = () => {
   const [uploads, setUploads] = useState<any[]>([])
-  const [loading, setLoading] = useState<any>(true)
-  const [page, setPage] = useState<any>(1)
-  const [totalPages, setTotalPages] = useState<any>(1)
+  const [loading, setLoading] = useState(true)
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
 
   useEffect(() => {
     const fetchUploads = async () => {
@@ -25,7 +27,6 @@ const UserUploads = () => {
         const res = await axiosInstance.get(`/api/v1/orders/uploads?page=${page}&limit=10`, {
           headers: { Authorization: `Bearer ${token}` },
         })
-        console.log('Response 🚨: ', res.data)
         setUploads(res.data.data)
         setTotalPages(res.data.pagination.totalPages)
       } catch (error) {
@@ -38,11 +39,54 @@ const UserUploads = () => {
     fetchUploads()
   }, [page])
 
+  const downloadCSV = async () => {
+    try {
+      const token = localStorage.getItem('token')
+      const res = await axiosInstance.get(`/api/v1/orders/download-csv`, {
+        headers: { Authorization: `Bearer ${token}` },
+        responseType: 'blob', // Ensures we receive binary data
+      })
+
+      const url = window.URL.createObjectURL(new Blob([res.data]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', 'uploads.csv')
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    } catch (error) {
+      console.error('Error downloading CSV:', error)
+    }
+  }
+
   return (
     <Paper sx={{ p: 4, maxWidth: '93%', mx: 'auto', boxShadow: 3, borderRadius: 2 }}>
       <Typography variant="h4" sx={{ textAlign: 'center', fontWeight: 'bold', mb: 3, color: '#4077cf' }}>
         Uploads
       </Typography>
+
+      {uploads.length > 0 && (
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+        <Button
+  variant="contained"
+  sx={{
+    bgcolor: '#4077cf',
+    color: 'white',
+    fontWeight: 'bold',
+    px: 3,
+    py: 1.2,
+    borderRadius: 2,
+    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
+    '&:hover': { bgcolor: '#153075' },
+  }}
+  onClick={downloadCSV}
+  className="flex gap-2 items-center"
+>
+  <Download size={20} />
+  <span>Export</span>
+</Button>
+        </Box>
+      )}
 
       {loading ? (
         <Typography textAlign="center" color="gray">
@@ -92,7 +136,7 @@ const UserUploads = () => {
 }
 
 const PaginationControls = ({ page, totalPages, setPage }: any) => (
-  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px', marginTop: '20px' }}>
+  <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px', mt: 3 }}>
     <Button
       variant="contained"
       sx={{ bgcolor: '#4077cf', '&:hover': { bgcolor: '#153075' } }}
@@ -112,7 +156,7 @@ const PaginationControls = ({ page, totalPages, setPage }: any) => (
     >
       Next
     </Button>
-  </div>
+  </Box>
 )
 
 export default UserUploads
