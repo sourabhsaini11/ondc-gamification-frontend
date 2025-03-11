@@ -120,7 +120,8 @@ const LeaderboardSection = ({ title, data, setSelectedDate, loading }: { title: 
                     data.map((user, index) => (
                       <TableRow key={user.id} sx={{ bgcolor: index % 2 === 0 ? '#F0F4FF' : 'white' }}>
                         <TableCell>{index + 1}</TableCell>
-                        <TableCell>{user.game_id}</TableCell>
+                        <TableCell>{user.game_id.length > 10 ? user.game_id.slice(0, 10) + "..." : user.game_id}</TableCell>
+
                         <TableCell>{user.total_points}</TableCell>
                         <TableCell>{user.total_orders}</TableCell>
                         <TableCell>{user.total_gmv}</TableCell>

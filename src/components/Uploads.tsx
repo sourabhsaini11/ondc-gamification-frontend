@@ -12,7 +12,7 @@ import {
   Box,
 } from '@mui/material'
 import axiosInstance from '@/lib/axiosInstance'
-import { Download } from 'lucide-react'
+import { Download, Loader2 } from 'lucide-react'
 
 const UserUploads = () => {
   const [uploads, setUploads] = useState<any[]>([])
@@ -44,7 +44,7 @@ const UserUploads = () => {
       const token = localStorage.getItem('token')
       const res = await axiosInstance.get(`/api/v1/orders/download-csv`, {
         headers: { Authorization: `Bearer ${token}` },
-        responseType: 'blob', // Ensures we receive binary data
+        responseType: 'blob',
       })
 
       const url = window.URL.createObjectURL(new Blob([res.data]))
@@ -67,31 +67,31 @@ const UserUploads = () => {
 
       {uploads.length > 0 && (
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
-        <Button
-  variant="contained"
-  sx={{
-    bgcolor: '#4077cf',
-    color: 'white',
-    fontWeight: 'bold',
-    px: 3,
-    py: 1.2,
-    borderRadius: 2,
-    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
-    '&:hover': { bgcolor: '#153075' },
-  }}
-  onClick={downloadCSV}
-  className="flex gap-2 items-center"
->
-  <Download size={20} />
-  <span>Export</span>
-</Button>
+          <Button
+            variant="contained"
+            sx={{
+              bgcolor: '#4077cf',
+              color: 'white',
+              fontWeight: 'bold',
+              px: 3,
+              py: 1.2,
+              borderRadius: 2,
+              boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
+              '&:hover': { bgcolor: '#153075' },
+            }}
+            onClick={downloadCSV}
+            className="flex gap-2 items-center"
+          >
+            <Download size={20} />
+            <span>Export</span>
+          </Button>
         </Box>
       )}
 
       {loading ? (
-        <Typography textAlign="center" color="gray">
-          Loading uploaded data...
-        </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 100 }}>
+          <Loader2 className='animate-spin' size={32} />
+        </Box>
       ) : uploads.length > 0 ? (
         <>
           <TableContainer component={Paper} sx={{ borderRadius: 2 }}>
