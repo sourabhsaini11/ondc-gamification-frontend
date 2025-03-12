@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from './services/AuthContext'
 import UserDashboard from './components/UserDashboard'
 import LoginPage from '../src/app/login/page'
 import SignUpPage from './components/SignUpForm'
+import NewLeaderBoardComponent from './components/NewLeaderBoardComponent'
 
 function ProtectedRoute({ children }: { children: JSX.Element }) {
   const { isAuthenticated } = useAuth()
@@ -46,6 +47,10 @@ function App() {
                 <UserDashboard />
               </ProtectedRoute>
             }
+          />
+          <Route
+          path="/temp"
+          element = {<NewLeaderBoardComponent />}
           />
 
           {/* Catch-all route: Redirect to login if not authenticated, otherwise dashboard */}
