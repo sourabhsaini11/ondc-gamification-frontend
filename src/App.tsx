@@ -5,6 +5,7 @@ import LoginPage from '../src/app/login/page'
 import SignUpPage from './components/SignUpForm'
 import NewLeaderBoardComponent from './components/NewLeaderBoardComponent'
 import { TableDemo } from './components/Table'
+import Leaderboard from './components/Leaderboard'
 
 function ProtectedRoute({ children }: { children: JSX.Element }) {
   const { isAuthenticated } = useAuth()
@@ -54,7 +55,7 @@ function App() {
           element = {
          
 
-              <NewLeaderBoardComponent />
+              <Leaderboard />
       
         }
           />

@@ -16,7 +16,6 @@ import { Dashboard, UploadFile, Logout, Menu as MenuIcon } from '@mui/icons-mate
 import FileUploadWrapper from './FileUploadWrapper'
 
 import { useAuth } from '../services/AuthContext'
-import Data from './ui/Data'
 
 import {  User2Icon } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
