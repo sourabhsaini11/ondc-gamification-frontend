@@ -21,6 +21,12 @@ const FILTER_OPTIONS = ["All Time", "Monthly", "Weekly", "Daily"];
 const NewLeaderBoardComponent = () => {
   const [filter, setFilter] = useState("All Time");
   const [searchTerm, setSearchTerm] = useState("");
+  const HEIGHTS = ["h-48", "h-36", "h-28"];
+const BG_CLASSES = [
+  "bg-yellow-100/70 border border-yellow-200",
+  "bg-slate-100/80 border border-gray-200",
+  "bg-red-100/90 border border-red-400",
+];
 
   const { data: dailyLeaders = [], isLoading: isDailyLoading } = useQuery({
     queryFn: dailyLeaderboard,
@@ -72,47 +78,39 @@ const NewLeaderBoardComponent = () => {
 
 
 
-      <div className="top h-[30vh] flex gap-10 px-40 pt-72 pb-20 justify-center items-end">
-        {topThree.length > 0 ? (
-          topThree.map((user : any, index : any) => (
-            <div
-              key={index}
-              className={`group relative cursor-pointer flex flex-col justify-center items-center rounded-t-xl text-center h-${
-                index === 0 ? "48" : index === 1 ? "36" : "28"
-              } bg-${
-                index === 0
-                  ? "yellow-100/70 border border-yellow-200"
-                  : index === 1
-                  ? "slate-100/80 border border-gray-200"
-                  : "red-100/90 border border-red-400"
-              } w-1/5 shadow-md shadow-gray-400`}
-            >
-              <div className="absolute top-[-60px] text-sm">
-                <div className="flex flex-col text-md justify-center">
-                  <span className="text-black">{user.game_id?.slice(0, 4) || ""}</span>
-                  <span className="text-gray-400">{user.total_points}</span>
-                </div>
-              </div>
-              <div
-                className={`rounded-full w-20 h-20 border-2 bg-white font-bold text-2xl text-center flex flex-col justify-center ${
-                  index === 0
-                    ? "border-yellow-500 text-yellow-700"
-                    : index === 1
-                    ? "border-slate-500 text-slate-700"
-                    : "border-red-300 text-red-400"
-                }`}
-              >
-                {index + 1}
-              </div>
-            </div>
-          ))
-        ) : (
-          <div className="flex flex-col items-center text-gray-500 gap-3">
-            <Trophy className="w-16 h-16 text-gray-300" />
-            <p className="text-lg font-medium">No leaders available</p>
+<div className="top h-[30vh] flex gap-10 px-40 pt-72 pb-20 justify-center items-end">
+  {topThree.length > 0 ? (
+    topThree.map((user: any, index: any) => (
+      <div
+        key={index}
+        className={`group relative cursor-pointer flex flex-col justify-center items-center rounded-t-xl text-center ${HEIGHTS[index]} ${BG_CLASSES[index]} w-1/5 shadow-md shadow-gray-400`}
+      >
+        <div className="absolute top-[-60px] text-sm">
+          <div className="flex flex-col text-md justify-center">
+            <span className="text-black">{user.game_id?.slice(0, 4) || ""}</span>
+            <span className="text-gray-400">{user.total_points}</span>
           </div>
-        )}
+        </div>
+        <div
+          className={`rounded-full w-20 h-20 border-2 bg-white font-bold text-2xl text-center flex flex-col justify-center ${
+            index === 0
+              ? "border-yellow-500 text-yellow-700"
+              : index === 1
+              ? "border-slate-500 text-slate-700"
+              : "border-red-300 text-red-400"
+          }`}
+        >
+          {index + 1}
+        </div>
       </div>
+    ))
+  ) : (
+    <div className="flex flex-col items-center text-gray-500 gap-3">
+      <Trophy className="w-16 h-16 text-gray-300" />
+      <p className="text-lg font-medium">No leaders available</p>
+    </div>
+  )}
+</div>;
 
       <div className="bottom h-[70vh] flex flex-col gap-4 mx-2">
         <div className="flex justify-between items-center mx-4">
