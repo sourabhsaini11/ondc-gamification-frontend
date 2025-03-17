@@ -59,7 +59,7 @@ const NewLeaderBoardComponent = () => {
 
   const leaderboardData = getFilteredData();
   const topThree = leaderboardData.slice(0, 3);
-  const searchableLeaders = leaderboardData.filter((user) =>
+  const searchableLeaders = leaderboardData.filter((user: any) =>
     searchTerm ? user.game_id?.toLowerCase().includes(searchTerm.toLowerCase()) : true
   );
 
@@ -74,7 +74,7 @@ const NewLeaderBoardComponent = () => {
 
       <div className="top h-[30vh] flex gap-10 px-40 pt-72 pb-20 justify-center items-end">
         {topThree.length > 0 ? (
-          topThree.map((user, index) => (
+          topThree.map((user : any, index : any) => (
             <div
               key={index}
               className={`group relative cursor-pointer flex flex-col justify-center items-center rounded-t-xl text-center h-${

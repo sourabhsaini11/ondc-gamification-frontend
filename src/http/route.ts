@@ -11,22 +11,28 @@ export const registerAPI = async (data: RegisterFormData) => {
   return response.data
 }
 
+const getPreviousDate = () => {
+  const date = new Date();
+  date.setDate(date.getDate() - 1);
+  return date.toISOString().split("T")[0]; 
+};
+
 export const dailyLeaderboard = async () => {
-  const response = await axiosInstance.get(`/api/v1/orders/daily-leaderboard`)
-  return response.data.data.body
-}
+  const response = await axiosInstance.get(`/api/v1/orders/daily-leaderboard?date=${getPreviousDate()}`);
+  return response.data.data.body;
+};
 
 export const weeklyLeaderboard = async () => {
-  const response = await axiosInstance.get(`/api/v1/orders/week-leaderboard`)
-  return response.data.data.body
-}
+  const response = await axiosInstance.get(`/api/v1/orders/week-leaderboard?date=${getPreviousDate()}`);
+  return response.data.data.body;
+};
 
 export const monthlyLeaderboard = async () => {
-  const response = await axiosInstance.get(`/api/v1/orders/month-leaderboard`)
-  return response.data.data.body
-}
+  const response = await axiosInstance.get(`/api/v1/orders/month-leaderboard?date=${getPreviousDate()}`);
+  return response.data.data.body;
+};
 
-export const allTimeLeaders = async() => {
-  const response = await axiosInstance.get(`/api/v1/orders/alltime-leaderboard`)
-  return response.data.data.body
-}
+export const allTimeLeaders = async () => {
+  const response = await axiosInstance.get(`/api/v1/orders/alltime-leaderboard?date=${getPreviousDate()}`);
+  return response.data.data.body;
+};
