@@ -20,6 +20,7 @@ import Data from './ui/Data'
 
 import {  User2Icon } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import NewLeaderBoardComponent from './NewLeaderBoardComponent'
 
 const UserDashboard = () => {
   const { userEmail, logout } = useAuth()
@@ -111,7 +112,7 @@ const UserDashboard = () => {
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard/leaderboard" />} />
             {/* <Route path="leaderboard" element={<Leaderboard />} /> */}
-            <Route path="leaderboard" element={<Data />} />
+            <Route path="leaderboard" element={<NewLeaderBoardComponent />} />
             <Route path="upload" element={<FileUploadWrapper />} />
           </Routes>
         </Box>

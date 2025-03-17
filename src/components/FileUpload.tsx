@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import axiosInstance from '@/lib/axiosInstance'
+import axios from 'axios'
+import { Loader2 } from 'lucide-react'
 
 const FileUpload = () => {
   const [file, setFile] = useState<File | null>(null)
@@ -46,7 +47,7 @@ const FileUpload = () => {
       setUploading(true)
       setMessage('')
       const token = localStorage.getItem('token')
-      const response = await axiosInstance.post(`api/v1/orders/upload-csv`, formData, {
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URI}/api/v1/orders/upload-csv`, formData, {
         headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` },
       })
 
@@ -74,13 +75,14 @@ const FileUpload = () => {
         </div>
       )}
 
-      <button
-        onClick={handleUpload}
-        disabled={uploading || !file}
-        className="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded disabled:opacity-50 transition duration-200"
-      >
-        {uploading ? 'Uploading...' : 'Upload CSV'}
-      </button>
+<button
+  onClick={handleUpload}
+  disabled={uploading || !file}
+  className="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded disabled:opacity-50 transition duration-200 flex justify-center items-center"
+>
+  {uploading ? <Loader2 className="animate-spin h-5 w-5" /> : 'Upload CSV'}
+</button>
+
 
       {message && (
         <p className={`mt-3 text-sm font-semibold ${message.startsWith('✅') ? 'text-green-600' : 'text-red-500'}`}>
