@@ -13,7 +13,7 @@ export const registerAPI = async (data: RegisterFormData) => {
 
 const getPreviousDate = () => {
   const date = new Date();
-  date.setDate(date.getDate() - 1);
+  date.setDate(date.getDate());
   return date.toISOString().split("T")[0]; 
 };
 
