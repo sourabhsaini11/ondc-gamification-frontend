@@ -2,11 +2,8 @@ import axios from 'axios'
 
 const axiosInstance = axios.create({
   baseURL: `https://gamafication-node-backend-dev.thewitslab.com`,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  timeout: 10000,
-  
+  headers: { 'Content-Type': 'application/json' },
+  timeout: 15000, 
 })
 
 // Request Interceptor

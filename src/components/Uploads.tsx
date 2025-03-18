@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import {
   Table,
   TableBody,
@@ -13,50 +13,58 @@ import {
 } from '@mui/material'
 import axiosInstance from '@/lib/axiosInstance'
 import { Download, Loader2 } from 'lucide-react'
+import { useMutation, useQuery } from 'react-query'
 
 const UserUploads = () => {
-  const [uploads, setUploads] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(1)
 
-  useEffect(() => {
-    const fetchUploads = async () => {
-      try {
-        const token = localStorage.getItem('token')
-        const res = await axiosInstance.get(`/api/v1/orders/uploads?page=${page}&limit=10`, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        setUploads(res.data.data)
-        setTotalPages(res.data.pagination.totalPages)
-      } catch (error) {
-        console.error('Error fetching uploads:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
+  // Define query keys
+  const UPLOADS_QUERY_KEY = ['uploads', page]
 
-    fetchUploads()
-  }, [page])
+  // Fetch uploads using React Query
+  const fetchUploads = async () => {
+    const token = localStorage.getItem('token')
+    const res = await axiosInstance.get(`/api/v1/orders/uploads?page=${page}&limit=10`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return res.data
+  }
 
-  const downloadCSV = async () => {
-    try {
+  const { data, isLoading, error } = useQuery({
+    queryKey: UPLOADS_QUERY_KEY,
+    queryFn: fetchUploads,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  })
+
+  const uploads = data?.data || []
+  const totalPages = data?.pagination?.totalPages || 1
+
+  // Download CSV mutation
+  const downloadCSVMutation  = useMutation({
+    mutationFn: async () => {
       const token = localStorage.getItem('token')
       const res = await axiosInstance.get(`/api/v1/orders/download-csv`, {
         headers: { Authorization: `Bearer ${token}` },
         responseType: 'blob',
       })
-
-      const url = window.URL.createObjectURL(new Blob([res.data]))
+      return res.data
+    },
+    onSuccess: (data) => {
+      const url = window.URL.createObjectURL(new Blob([data]))
       const link = document.createElement('a')
       link.href = url
       link.setAttribute('download', 'uploads.csv')
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
-    } catch (error) {
+    },
+    onError: (error) => {
       console.error('Error downloading CSV:', error)
     }
+  })
+
+  if (error) {
+    console.error('Error fetching uploads:', error)
   }
 
   return (
@@ -79,16 +87,21 @@ const UserUploads = () => {
               boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
               '&:hover': { bgcolor: '#153075' },
             }}
-            onClick={downloadCSV}
+            onClick={() => downloadCSVMutation.mutate()}
+            disabled={downloadCSVMutation.isLoading}
             className="flex gap-2 items-center"
           >
-            <Download size={20} />
+            {downloadCSVMutation.isLoading ? (
+              <Loader2 className="animate-spin" size={20} />
+            ) : (
+              <Download size={20} />
+            )}
             <span>Export</span>
           </Button>
         </Box>
       )}
 
-      {loading ? (
+      {isLoading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 100 }}>
           <Loader2 className='animate-spin' size={32} />
         </Box>
@@ -98,7 +111,7 @@ const UserUploads = () => {
             <Table>
               <TableHead sx={{ bgcolor: '#4077cf' }}>
                 <TableRow>
-                  {['Order ID', 'Game ID', 'Name',  'Total Price', , 'Status', 'Phone', 'Timestamp Created'].map(
+                  {['Order ID', 'Game ID', 'Name', 'Total Price', 'Status', 'Phone', 'Timestamp Created'].map(
                     (header) => (
                       <TableCell key={header} sx={{ color: 'white', fontWeight: 'bold' }}>
                         {header}
@@ -108,7 +121,7 @@ const UserUploads = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {uploads.map((order: any, index) => (
+                {uploads.map((order: any, index : any) => (
                   <TableRow key={order.id} sx={{ bgcolor: index % 2 === 0 ? '#fafafa' : 'white' }}>
                     <TableCell>{order.order_id}</TableCell>
                     <TableCell>{order.game_id.slice(0, 4)}...</TableCell>
@@ -133,13 +146,13 @@ const UserUploads = () => {
   )
 }
 
-const PaginationControls = ({ page, totalPages, setPage }: any) => (
+const PaginationControls = ({ page, totalPages, setPage } : {page: any, totalPages: any, setPage: any}) => (
   <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px', mt: 3 }}>
     <Button
       variant="contained"
       sx={{ bgcolor: '#4077cf', '&:hover': { bgcolor: '#153075' } }}
       disabled={page === 1}
-      onClick={() => setPage((prev: any) => Math.max(prev - 1, 1))}
+      onClick={() => setPage((prev : any) => Math.max(prev - 1, 1))}
     >
       Previous
     </Button>
@@ -150,7 +163,7 @@ const PaginationControls = ({ page, totalPages, setPage }: any) => (
       variant="contained"
       sx={{ bgcolor: '#4077cf', '&:hover': { bgcolor: '#153075' } }}
       disabled={page === totalPages}
-      onClick={() => setPage((prev: any) => Math.min(prev + 1, totalPages))}
+      onClick={() => setPage((prev : any) => Math.min(prev + 1, totalPages))}
     >
       Next
     </Button>
