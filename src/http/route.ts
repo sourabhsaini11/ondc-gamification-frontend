@@ -36,3 +36,10 @@ export const allTimeLeaders = async () => {
   const response = await axiosInstance.get(`/api/v1/orders/alltime-leaderboard?date=${getPreviousDate()}`);
   return response.data.data.body;
 };
+
+export const fileUpload = async (formdata : any) => {
+  const response = await axiosInstance.post(`/api/v1/orders/upload-csv`, formdata, {
+    headers: { 'Content-Type': 'multipart/form-data'},
+  })
+  return response.data
+}

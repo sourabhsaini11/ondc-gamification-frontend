@@ -1,30 +1,34 @@
 import React, { useState } from 'react'
 import { Loader2 } from 'lucide-react'
-import axiosInstance from '@/lib/axiosInstance'
+import { useMutation, useQueryClient } from 'react-query'
+import { fileUpload } from '@/http/route'
 
 const FileUpload = () => {
   const [file, setFile] = useState<File | null>(null)
-  const [uploading, setUploading] = useState(false)
-  const [message, setMessage] = useState('')
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+  const [, setPreviewUrl] = useState<string | null>(null)
+
+  const queryClient = useQueryClient()
+
+  const uploadMutation = useMutation({
+    mutationFn: fileUpload,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['uploads'] })
+    },
+    onError: () => {},
+  })
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0] || null
 
     if (selectedFile) {
-      // Validate file type
       if (selectedFile.type !== 'text/csv' && !selectedFile.name.endsWith('.csv')) {
-        setMessage('❌ Only CSV files are allowed.')
+        alert('❌ Only CSV files are allowed.')
         setFile(null)
         setPreviewUrl(null)
         return
       }
 
       setFile(selectedFile)
-      setMessage('')
-      console.log('previewUrl', previewUrl)
-
-      // Optional preview (CSV files are text-based, so no real "preview")
       const fileURL = URL.createObjectURL(selectedFile)
       setPreviewUrl(fileURL)
     } else {
@@ -33,32 +37,17 @@ const FileUpload = () => {
     }
   }
 
-  const handleUpload = async () => {
+  const handleUpload = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault()
     if (!file) {
-      setMessage('❌ Please select a valid CSV file.')
+      alert('❌ Please select a valid CSV file.')
       return
     }
-    
 
     const formData = new FormData()
     formData.append('file', file)
 
-    try {
-      setUploading(true)
-      setMessage('')
-      const token = localStorage.getItem('token')
-      const response = await axiosInstance.post(`/api/v1/orders/upload-csv`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` },
-      })
-
-      console.log('Upload Success:', response)
-      setMessage('✅ File uploaded successfully!')
-    } catch (error) {
-      setMessage('❌ Error uploading file.')
-      console.error(error)
-    } finally {
-      setUploading(false)
-    }
+    uploadMutation.mutate(formData)
   }
 
   return (
@@ -75,20 +64,18 @@ const FileUpload = () => {
         </div>
       )}
 
-<button
-  onClick={handleUpload}
-  disabled={uploading || !file}
-  className="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded disabled:opacity-50 transition duration-200 flex justify-center items-center"
->
-  {uploading ? <Loader2 className="animate-spin h-5 w-5" /> : 'Upload CSV'}
-</button>
+      <button
+        onClick={handleUpload}
+        disabled={uploadMutation.isLoading || !file}
+        className="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded disabled:opacity-50 transition duration-200 flex justify-center items-center"
+      >
+        {uploadMutation.isLoading ? <Loader2 className="animate-spin h-5 w-5" /> : 'Upload CSV'}
+      </button>
 
-
-      {message && (
-        <p className={`mt-3 text-sm font-semibold ${message.startsWith('✅') ? 'text-green-600' : 'text-red-500'}`}>
-          {message}
-        </p>
+      {uploadMutation.isSuccess && (
+        <p className="mt-3 text-sm font-semibold text-green-600">✅ File uploaded successfully!</p>
       )}
+      {uploadMutation.isError && <p className="mt-3 text-sm font-semibold text-red-500">❌ Error uploading file.</p>}
     </div>
   )
 }
