@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import axios from 'axios'
 import { Loader2 } from 'lucide-react'
+import axiosInstance from '@/lib/axiosInstance'
 
 const FileUpload = () => {
   const [file, setFile] = useState<File | null>(null)
@@ -47,7 +47,7 @@ const FileUpload = () => {
       setUploading(true)
       setMessage('')
       const token = localStorage.getItem('token')
-      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URI}/api/v1/orders/upload-csv`, formData, {
+      const response = await axiosInstance.post(`/api/v1/orders/upload-csv`, formData, {
         headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` },
       })
 

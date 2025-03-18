@@ -3,15 +3,13 @@ import { Button } from './ui/button'
 import UserUploads from './Uploads'
 
 const fields = [
-  "game_id",
   "order_id",
   "name",
   "domain",
   "buyer_app_id",
   "total_price",
-  "points",
   "timestamp_created",
-  "timestamp_updated",
+  "phone_number",
 ]
 
 const downloadCSV = () => {
