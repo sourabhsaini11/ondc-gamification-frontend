@@ -6,7 +6,6 @@ const fields = [
   "order_id",
   "name",
   "domain",
-  "buyer_app_id",
   "total_price",
   "timestamp_created",
   "phone_number",
