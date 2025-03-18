@@ -98,7 +98,7 @@ const UserUploads = () => {
             <Table>
               <TableHead sx={{ bgcolor: '#4077cf' }}>
                 <TableRow>
-                  {['Order ID', 'Game ID', 'Name',  'Buyer',  'Total Price', , 'Status', 'Phone', 'Timestamp Created'].map(
+                  {['Order ID', 'Game ID', 'Name',  'Total Price', , 'Status', 'Phone', 'Timestamp Created'].map(
                     (header) => (
                       <TableCell key={header} sx={{ color: 'white', fontWeight: 'bold' }}>
                         {header}
@@ -113,7 +113,6 @@ const UserUploads = () => {
                     <TableCell>{order.order_id}</TableCell>
                     <TableCell>{order.game_id.slice(0, 4)}...</TableCell>
                     <TableCell>{order.name}</TableCell>
-                    <TableCell>{order.buyer_app_id}</TableCell>
                     <TableCell>{order.total_price}</TableCell>
                     <TableCell>{order.order_status}</TableCell>
                     <TableCell>{order.uid}</TableCell>

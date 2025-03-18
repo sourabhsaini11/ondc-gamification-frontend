@@ -9,6 +9,7 @@ const fields = [
   "total_price",
   "timestamp_created",
   "phone_number",
+  "order_status"
 ]
 
 const downloadCSV = () => {
