@@ -30,7 +30,7 @@ deploy-dev:
     - sshpass -p $ONDC_GAMIFICATION_PASSWORD ssh -tt $Default_Username@$ONDC_GAMIFICATION_HOST "git clone -b feat/dockerise-frontend https://user:$GITLAB_ACCESS_TOKEN@gitlab.thewitslab.com/wil-workspace/WIL-ONDC-Products/gamafication-react-frontend.git"
     - sshpass -p $ONDC_GAMIFICATION_PASSWORD scp .env $Default_Username@$ONDC_GAMIFICATION_HOST:/home/$Default_Username/gamafication-react-frontend
     - sshpass -p $ONDC_GAMIFICATION_PASSWORD ssh -tt $Default_Username@$ONDC_GAMIFICATION_HOST "cd gamafication-react-frontend && docker-compose up -d --build"
-    - echo "Hosted_URL":"https://gamafication-react-frontend-dev.thewitslab.com"
+    - echo "Hosted_URL":"https://gamification-react-frontend-dev.thewitslab.com"
     - echo "Deployment Completed for gamafication-react-frontend, Environment- Dev."
 
 
