@@ -98,7 +98,7 @@ const UserUploads = () => {
             <Table>
               <TableHead sx={{ bgcolor: '#4077cf' }}>
                 <TableRow>
-                  {['Order ID', 'Name', 'Category', 'Buyer', 'Seller', 'Base Price', 'Discount', 'Status', 'Phone'].map(
+                  {['Order ID', 'Name',  'Buyer',  'Total Price', , 'Status', 'Phone'].map(
                     (header) => (
                       <TableCell key={header} sx={{ color: 'white', fontWeight: 'bold' }}>
                         {header}
@@ -112,11 +112,8 @@ const UserUploads = () => {
                   <TableRow key={order.id} sx={{ bgcolor: index % 2 === 0 ? '#fafafa' : 'white' }}>
                     <TableCell>{order.order_id}</TableCell>
                     <TableCell>{order.name}</TableCell>
-                    <TableCell>{order.category}</TableCell>
                     <TableCell>{order.buyer_app_id}</TableCell>
-                    <TableCell>{order.seller_id}</TableCell>
-                    <TableCell>{order.base_price}</TableCell>
-                    <TableCell>{order.discount}</TableCell>
+                    <TableCell>{order.total_price}</TableCell>
                     <TableCell>{order.order_status}</TableCell>
                     <TableCell>{order.uid}</TableCell>
                   </TableRow>
