@@ -1,48 +1,57 @@
-import { useState } from "react";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Separator } from "./ui/separator";
-import { Loader2, Search, Trophy } from "lucide-react";
-import { TableDemo } from "./Table";
-import { Button } from "@/components/ui/button";
-import { useQuery } from "react-query";
-import { dailyLeaderboard, weeklyLeaderboard, monthlyLeaderboard } from "@/http/route";
-import GameMechanics from "./ui/Data";
+import { useState } from 'react'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
+import { Separator } from './ui/separator'
+import { Loader2, Search, Trophy } from 'lucide-react'
+import { TableDemo } from './Table'
+import { Button } from '@/components/ui/button'
+import { useQuery } from 'react-query'
+import { dailyLeaderboard, weeklyLeaderboard, monthlyLeaderboard } from '@/http/route'
+import GameMechanics from './ui/Data'
 
-const FILTER_OPTIONS = ["Monthly", "Weekly", "Daily"];
+const FILTER_OPTIONS = ['Monthly', 'Weekly', 'Daily']
 
 const NewLeaderBoardComponent = () => {
-  const [filter, setFilter] = useState("Monthly");
-  const [searchTerm, setSearchTerm] = useState("");
+  const [filter, setFilter] = useState('Monthly')
+  const [searchTerm, setSearchTerm] = useState('')
 
-  const { data: dailyLeaders = [], isLoading: isDailyLoading } = useQuery({ queryFn: dailyLeaderboard, queryKey: ["daily-leaders"] });
-  const { data: weeklyLeaders = [], isLoading: isWeeklyLoading } = useQuery({ queryFn: weeklyLeaderboard, queryKey: ["weekly-leaders"] });
-  const { data: monthlyLeaders = [], isLoading: isMonthlyLoading } = useQuery({ queryFn: monthlyLeaderboard, queryKey: ["monthly-leaders"] });
+  const { data: dailyLeaders = [], isLoading: isDailyLoading } = useQuery({
+    queryFn: dailyLeaderboard,
+    queryKey: ['daily-leaders'],
+  })
+  const { data: weeklyLeaders = [], isLoading: isWeeklyLoading } = useQuery({
+    queryFn: weeklyLeaderboard,
+    queryKey: ['weekly-leaders'],
+  })
+  const { data: monthlyLeaders = [], isLoading: isMonthlyLoading } = useQuery({
+    queryFn: monthlyLeaderboard,
+    queryKey: ['monthly-leaders'],
+  })
 
-  const HEIGHTS = ["h-48", "h-36", "h-28"];
+  const HEIGHTS = ['h-48', 'h-36', 'h-28']
   const BG_CLASSES = [
-    "bg-yellow-100/70 border border-yellow-200",
-    "bg-slate-100/80 border border-gray-200",
-    "bg-red-100/90 border border-red-400",
-  ];
+    'bg-yellow-100/70 border border-yellow-200',
+    'bg-slate-100/80 border border-gray-200',
+    'bg-red-100/90 border border-red-400',
+  ]
 
   const getFilteredData = () => {
     switch (filter) {
-      case "Daily":
-        return dailyLeaders;
-      case "Weekly":
-        return weeklyLeaders;
-      case "Monthly":
-        return monthlyLeaders;
+      case 'Daily':
+        return dailyLeaders
+      case 'Weekly':
+        return weeklyLeaders
+      case 'Monthly':
+        return monthlyLeaders
       default:
-        return [];
+        return []
     }
-  };
+  }
 
-  const leaderboardData = getFilteredData();
-  const topThree = leaderboardData.slice(0, 3);
+  const leaderboardData = getFilteredData()
+  const topThree = leaderboardData.slice(0, 3)
   const searchableLeaders = leaderboardData.filter((user: any) =>
-    searchTerm ? user.game_id?.toLowerCase().includes(searchTerm.toLowerCase()) : true
-  );
+    searchTerm ? user.game_id?.toLowerCase().includes(searchTerm.toLowerCase()) : true,
+  )
 
   return (
     <Tabs defaultValue="leaderboard" className="w-full">
@@ -69,17 +78,17 @@ const NewLeaderBoardComponent = () => {
                 >
                   <div className="absolute top-[-60px] text-sm">
                     <div className="flex flex-col text-md justify-center">
-                      <span className="text-black">{user.game_id?.slice(0, 4) || ""}</span>
+                      <span className="text-black">{user.game_id?.slice(0, 4) || ''}</span>
                       <span className="text-gray-400">{user.total_points}</span>
                     </div>
                   </div>
                   <div
                     className={`rounded-full w-20 h-20 border-2 bg-white font-bold text-2xl text-center flex flex-col justify-center ${
                       index === 0
-                        ? "border-yellow-500 text-yellow-700"
+                        ? 'border-yellow-500 text-yellow-700'
                         : index === 1
-                        ? "border-slate-500 text-slate-700"
-                        : "border-red-300 text-red-400"
+                        ? 'border-slate-500 text-slate-700'
+                        : 'border-red-300 text-red-400'
                     }`}
                   >
                     {index + 1}
@@ -96,8 +105,8 @@ const NewLeaderBoardComponent = () => {
 
           {/* Bottom Section */}
           <div className="bottom h-[70vh] flex flex-col gap-4 mx-2">
-            <div className="flex justify-center items-center mx-4 gap-4">
-              <div className="input-wrapper flex items-center justify-center rounded-xl px-4 tracking-wide gap-2 bg-gray-100 w-1/2 shadow-sm border border-gray-300">
+            <div className="flex flex-col justify-center items-center mx-4 gap-4">
+              <div className="input-wrapper flex items-center justify-center rounded-xl px-4 tracking-wide gap-2 bg-gray-100 w-1/2 shadow-sm border border-gray-300 ">
                 <Search className="text-gray-500" />
                 <input
                   type="text"
@@ -110,21 +119,21 @@ const NewLeaderBoardComponent = () => {
 
               {/* Horizontal Filter Buttons */}
               <div className="flex gap-2">
-  {FILTER_OPTIONS.map((option) => (
-    <Button
-      key={option}
-      variant="outline"
-      className={`shadow-md px-6 py-2 transition-all ${
-        filter === option
-          ? "bg-gray-900 text-white border-gray-900"
-          : "bg-white text-gray-700 border-gray-300 hover:bg-gray-200"
-      }`}
-      onClick={() => setFilter(option)}
-    >
-      {option}
-    </Button>
-  ))}
-</div>
+                {FILTER_OPTIONS.map((option) => (
+                  <Button
+                    key={option}
+                    variant="outline"
+                    className={`shadow-md px-6 py-2 transition-all ${
+                      filter === option
+                        ? 'bg-gray-900 text-white border-gray-900'
+                        : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-200'
+                    }`}
+                    onClick={() => setFilter(option)}
+                  >
+                    {option}
+                  </Button>
+                ))}
+              </div>
             </div>
 
             {/* Leaderboard Table */}
@@ -144,7 +153,7 @@ const NewLeaderBoardComponent = () => {
         <GameMechanics />
       </TabsContent>
     </Tabs>
-  );
-};
+  )
+}
 
-export default NewLeaderBoardComponent;
+export default NewLeaderBoardComponent
