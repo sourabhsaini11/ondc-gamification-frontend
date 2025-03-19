@@ -1,52 +1,34 @@
+import { useState } from "react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+
+import { Separator } from "./ui/separator";
 import { Loader2, Search, Trophy } from "lucide-react";
 import { TableDemo } from "./Table";
-import { useState } from "react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "react-query";
-import {
-  dailyLeaderboard,
-  weeklyLeaderboard,
-  monthlyLeaderboard,
-  allTimeLeaders,
-} from "@/http/route";
+import { dailyLeaderboard, weeklyLeaderboard, monthlyLeaderboard, allTimeLeaders } from "@/http/route";
+import GameMechanics from "./ui/Data";
 
 const FILTER_OPTIONS = ["All Time", "Monthly", "Weekly", "Daily"];
+
 
 const NewLeaderBoardComponent = () => {
   const [filter, setFilter] = useState("All Time");
   const [searchTerm, setSearchTerm] = useState("");
+
+  const { data: dailyLeaders = [], isLoading: isDailyLoading } = useQuery({ queryFn: dailyLeaderboard, queryKey: ["daily-leaders"] });
+  const { data: weeklyLeaders = [], isLoading: isWeeklyLoading } = useQuery({ queryFn: weeklyLeaderboard, queryKey: ["weekly-leaders"] });
+  const { data: monthlyLeaders = [], isLoading: isMonthlyLoading } = useQuery({ queryFn: monthlyLeaderboard, queryKey: ["monthly-leaders"] });
+  const { data: alltimeLeaders = [], isLoading: isAllTimeLoading } = useQuery({ queryFn: allTimeLeaders, queryKey: ["alltime-leaders"] });
+
+  
   const HEIGHTS = ["h-48", "h-36", "h-28"];
 const BG_CLASSES = [
   "bg-yellow-100/70 border border-yellow-200",
   "bg-slate-100/80 border border-gray-200",
   "bg-red-100/90 border border-red-400",
 ];
-
-  const { data: dailyLeaders = [], isLoading: isDailyLoading } = useQuery({
-    queryFn: dailyLeaderboard,
-    queryKey: ["daily-leaders"],
-  });
-
-  const { data: weeklyLeaders = [], isLoading: isWeeklyLoading } = useQuery({
-    queryFn: weeklyLeaderboard,
-    queryKey: ["weekly-leaders"],
-  });
-
-  const { data: monthlyLeaders = [], isLoading: isMonthlyLoading } = useQuery({
-    queryFn: monthlyLeaderboard,
-    queryKey: ["monthly-leaders"],
-  });
-
-  const { data: alltimeLeaders = [], isLoading: isAllTimeLoading } = useQuery({
-    queryFn: allTimeLeaders,
-    queryKey: ["alltime-leaders"],
-  });
 
   const getFilteredData = () => {
     switch (filter) {
@@ -71,11 +53,20 @@ const BG_CLASSES = [
 
 
   return (
-    <div className="flex flex-col justify-between bg-white">
-     <h1 className="text-5xl pt-6 pl-12 font-extrabold text-transparent bg-gradient-to-r from-gray-800 via-gray-700 to-gray-900 bg-clip-text mb-6 tracking-widest shadow-md">
-  Leaderboard
-</h1>
-
+    <Tabs defaultValue="leaderboard" className="w-full">
+      <TabsList className="flex justify-center space-x-4 p-4 bg-gray-100 rounded-lg shadow">
+        <TabsTrigger value="leaderboard">Leaderboard</TabsTrigger>
+        <TabsTrigger value="rules">Game Rules</TabsTrigger>
+      </TabsList>
+      <TabsContent value="leaderboard">
+      <div className="flex rounded-lg flex-col justify-between bg-white">
+    <div className="px-6 pt-6 pb-2">
+    <div className="flex items-center gap-2 justify-center">
+      
+      <h1 className="text-4xl font-medium text-gray-600">{filter} Leaderboard</h1>
+    </div>
+    <Separator className="my-4" />
+  </div>
 
 
 <div className="top h-[30vh] flex gap-10 px-40 pt-72 pb-20 justify-center items-end">
@@ -110,7 +101,7 @@ const BG_CLASSES = [
       <p className="text-lg font-medium">No leaders available</p>
     </div>
   )}
-</div>;
+</div>
 
       <div className="bottom h-[70vh] flex flex-col gap-4 mx-2">
         <div className="flex justify-between items-center mx-4">
@@ -152,6 +143,11 @@ const BG_CLASSES = [
         </div>
       </div>
     </div>
+      </TabsContent>
+      <TabsContent value="rules">
+        <GameMechanics />
+      </TabsContent>
+    </Tabs>
   );
 };
 

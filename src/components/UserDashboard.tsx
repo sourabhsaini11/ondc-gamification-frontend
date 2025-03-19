@@ -31,7 +31,8 @@ const UserDashboard = () => {
   
 
   return (
-    <Box sx={{ display: 'flex', height: '200vh', bgcolor: '#f4f6f8' }}>
+    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#f4f6f8' }}>
+
       {/* Sidebar */}
       <Drawer
         variant="temporary"
@@ -107,7 +108,7 @@ const UserDashboard = () => {
         </AppBar>
 
         {/* Page Content */}
-        <Box sx={{ p: 4 }}>
+        <Box sx={{ p: 2 }}>
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard/leaderboard" />} />
             {/* <Route path="leaderboard" element={<Leaderboard />} /> */}

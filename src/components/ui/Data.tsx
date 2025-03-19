@@ -1,12 +1,11 @@
 import { Paper, Typography, Box, Card, CardContent, CardHeader, IconButton, Stack } from '@mui/material';
 import { Gamepad2Icon } from 'lucide-react';
 import { GiPresent, GiLaurelsTrophy, GiGuitar, GiDiploma } from 'react-icons/gi'; // You can use any icon library
-import Leaderboard from '../Leaderboard';
 
 const GameMechanics = () => {
   return (
     <>
-      <Leaderboard />
+   
       <Box className="mt-4">
         <Paper sx={{ p: 4, maxWidth: '80%', mx: 'auto', boxShadow: 3, borderRadius: 2, backgroundColor: 'white' }}>
           <Typography variant="h4" sx={{ textAlign: 'center', fontWeight: 'bold', mb: 3, color: '#1e3a8a' }}>
