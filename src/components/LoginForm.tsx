@@ -5,7 +5,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '../services/AuthContext'
-import { Link } from 'react-router-dom'
 import {  Loader2 } from 'lucide-react'
 import { useMutation } from 'react-query'
 import { useToast } from '@/hooks/use-toast'
@@ -70,7 +69,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
                 <Input
                   id="email"
                   type="email"
-                  placeholder="naman.pawar@thewitslab.com"
+                  placeholder="shubham@thewitslab.com"
                   value={formData.email}
                   onChange={handleChange}
                   required
@@ -112,14 +111,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
           </form>
         </CardContent>
       </Card>
-      <div className="mt-4 text-center">
-        <p className="">
-          Don't have an account{' '}
-          <Link to="/signup" className="text-blue-700 hover:underline">
-            Create an account
-          </Link>
-        </p>
-      </div>
+    
     </div>
   )
 }

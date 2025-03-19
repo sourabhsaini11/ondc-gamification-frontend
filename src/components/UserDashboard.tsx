@@ -16,14 +16,12 @@ import { Dashboard, UploadFile, Logout, Menu as MenuIcon } from '@mui/icons-mate
 import FileUploadWrapper from './FileUploadWrapper'
 
 import { useAuth } from '../services/AuthContext'
-import Data from './ui/Data'
 
-import {  User2Icon } from 'lucide-react'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+
+import NewLeaderBoardComponent from './NewLeaderBoardComponent'
 
 const UserDashboard = () => {
-  const { userEmail, logout } = useAuth()
-  const userName = (userEmail && userEmail.split('@')[0]) || 'User'
+  const {  logout } = useAuth()
   const [drawerOpen, setDrawerOpen] = useState(false)
   const location = useLocation()
   let currentPage = location.pathname.split('/')[2]
@@ -31,7 +29,8 @@ const UserDashboard = () => {
   
 
   return (
-    <Box sx={{ display: 'flex', height: '200vh', bgcolor: '#f4f6f8' }}>
+    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#f4f6f8' }}>
+
       {/* Sidebar */}
       <Drawer
         variant="temporary"
@@ -89,29 +88,18 @@ const UserDashboard = () => {
             <Box sx={{ flexGrow: 1 }} />
             {/* User Info with Icon */}
             <Box sx={{ display: 'flex', alignItems: 'center', color: 'white', ml: 'auto', gap: 1 }}>
-            <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <a>
-            <User2Icon />
-          </a>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>{userName}</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+           
              
             </Box>
           </Toolbar>
         </AppBar>
 
         {/* Page Content */}
-        <Box sx={{ p: 4 }}>
+        <Box sx={{ p: 2 }}>
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard/upload" />} />
             {/* <Route path="leaderboard" element={<Leaderboard />} /> */}
-            <Route path="leaderboard" element={<Data />} />
+            <Route path="leaderboard" element={<NewLeaderBoardComponent />} />
             <Route path="upload" element={<FileUploadWrapper />} />
           </Routes>
         </Box>

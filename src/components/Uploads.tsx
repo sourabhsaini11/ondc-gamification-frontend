@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react'
-import axios from 'axios'
+import { useState } from 'react'
 import {
   Table,
   TableBody,
@@ -10,32 +9,63 @@ import {
   Paper,
   Button,
   Typography,
+  Box,
 } from '@mui/material'
+import axiosInstance from '@/lib/axiosInstance'
+import { Download, Loader2 } from 'lucide-react'
+import { useMutation, useQuery } from 'react-query'
 
 const UserUploads = () => {
-  const [uploads, setUploads] = useState<any[]>([])
-  const [loading, setLoading] = useState<any>(true)
-  const [page, setPage] = useState<any>(1)
-  const [totalPages, setTotalPages] = useState<any>(1)
+  const [page, setPage] = useState(1)
 
-  useEffect(() => {
-    const fetchUploads = async () => {
-      try {
-        const token = localStorage.getItem('token')
-        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/api/v1/orders/uploads?page=${page}&limit=10`, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        setUploads(res.data.data)
-        setTotalPages(res.data.pagination.totalPages)
-      } catch (error) {
-        console.error('Error fetching uploads:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
+  // Define query keys
+  const UPLOADS_QUERY_KEY = ['uploads', page]
 
-    fetchUploads()
-  }, [page])
+  // Fetch uploads using React Query
+  const fetchUploads = async () => {
+    const token = localStorage.getItem('token')
+    const res = await axiosInstance.get(`/api/v1/orders/uploads?page=${page}&limit=10`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return res.data
+  }
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: UPLOADS_QUERY_KEY,
+    queryFn: fetchUploads,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  })
+
+  const uploads = data?.data || []
+  const totalPages = data?.pagination?.totalPages || 1
+
+  // Download CSV mutation
+  const downloadCSVMutation = useMutation({
+    mutationFn: async () => {
+      const token = localStorage.getItem('token')
+      const res = await axiosInstance.get(`/api/v1/orders/download-csv`, {
+        headers: { Authorization: `Bearer ${token}` },
+        responseType: 'blob',
+      })
+      return res.data
+    },
+    onSuccess: (data) => {
+      const url = window.URL.createObjectURL(new Blob([data]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', 'uploads.csv')
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    },
+    onError: (error) => {
+      console.error('Error downloading CSV:', error)
+    },
+  })
+
+  if (error) {
+    console.error('Error fetching uploads:', error)
+  }
 
   return (
     <Paper sx={{ p: 4, maxWidth: '93%', mx: 'auto', boxShadow: 3, borderRadius: 2 }}>
@@ -43,49 +73,60 @@ const UserUploads = () => {
         Uploads
       </Typography>
 
-      {loading ? (
-        <Typography textAlign="center" color="gray">
-          Loading uploaded data...
-        </Typography>
+      {uploads.length > 0 && (
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+          <Button
+            variant="contained"
+            sx={{
+              bgcolor: '#4077cf',
+              color: 'white',
+              fontWeight: 'bold',
+              px: 3,
+              py: 1.2,
+              borderRadius: 2,
+              boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
+              '&:hover': { bgcolor: '#153075' },
+            }}
+            onClick={() => downloadCSVMutation.mutate()}
+            disabled={downloadCSVMutation.isLoading}
+            className="flex gap-2 items-center"
+          >
+            {downloadCSVMutation.isLoading ? <Loader2 className="animate-spin" size={20} /> : <Download size={20} />}
+            <span>Export</span>
+          </Button>
+        </Box>
+      )}
+
+      {isLoading ? (
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 100 }}>
+          <Loader2 className="animate-spin" size={32} />
+        </Box>
       ) : uploads.length > 0 ? (
         <>
           <TableContainer component={Paper} sx={{ borderRadius: 2 }}>
             <Table>
               <TableHead sx={{ bgcolor: '#4077cf' }}>
                 <TableRow>
-                  {[
-                    'Game ID',
-                    'Order ID',
-                    'Name',
-                    'Domain',
-                    'Buyer',
-                    'Base Price',
-                    'Discount',
-                    'Status',
-                    'Phone',
-                    'Points',
-                    'Timestamp updated',
-                  ].map((header) => (
-                    <TableCell key={header} sx={{ color: 'white', fontWeight: 'bold' }}>
-                      {header}
-                    </TableCell>
-                  ))}
+                  {['Order ID', 'Game ID', 'Name', 'Total Price', 'Status', 'Phone', 'Timestamp Created'].map(
+                    (header) => (
+                      <TableCell key={header} sx={{ color: 'white', fontWeight: 'bold' }}>
+                        {header}
+                      </TableCell>
+                    ),
+                  )}
                 </TableRow>
               </TableHead>
               <TableBody>
-                {uploads.map((order: any, index) => (
+                {uploads.map((order: any, index: any) => (
                   <TableRow key={order.id} sx={{ bgcolor: index % 2 === 0 ? '#fafafa' : 'white' }}>
                     <TableCell>{order.game_id.slice(0, 7)}</TableCell>
                     <TableCell>{order.order_id}</TableCell>
+                    <TableCell>{order.game_id.slice(0, 4)}...</TableCell>
                     <TableCell>{order.name}</TableCell>
-                    <TableCell>{order.domain}</TableCell>
-                    <TableCell>{order.buyer_app_id}</TableCell>
-                    <TableCell>{order.base_price}</TableCell>
-                    <TableCell>{order.discount}</TableCell>
+                    <TableCell>{order.total_price}</TableCell>
                     <TableCell>{order.order_status}</TableCell>
                     <TableCell>{order.uid}</TableCell>
-                    <TableCell>{order.points}</TableCell>
-                    <TableCell>{order.timestamp_updated}</TableCell>
+                    <TableCell>{order.timestamp_created}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -102,8 +143,8 @@ const UserUploads = () => {
   )
 }
 
-const PaginationControls = ({ page, totalPages, setPage }: any) => (
-  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px', marginTop: '20px' }}>
+const PaginationControls = ({ page, totalPages, setPage }: { page: any; totalPages: any; setPage: any }) => (
+  <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px', mt: 3 }}>
     <Button
       variant="contained"
       sx={{ bgcolor: '#4077cf', '&:hover': { bgcolor: '#153075' } }}
@@ -123,7 +164,7 @@ const PaginationControls = ({ page, totalPages, setPage }: any) => (
     >
       Next
     </Button>
-  </div>
+  </Box>
 )
 
 export default UserUploads

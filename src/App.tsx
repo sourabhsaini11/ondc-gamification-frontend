@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './services/AuthContext'
 import UserDashboard from './components/UserDashboard'
 import LoginPage from '../src/app/login/page'
-import SignUpPage from './components/SignUpForm'
+
 
 function ProtectedRoute({ children }: { children: JSX.Element }) {
   const { isAuthenticated } = useAuth()
@@ -29,15 +29,7 @@ function App() {
             }
           />
 
-          <Route
-            path="/signup"
-            element={
-              <AuthRedirect>
-                <SignUpPage />
-              </AuthRedirect>
-            }
-          />
-
+         
           {/* Dashboard Route with Subroutes */}
           <Route
             path="/dashboard/*"
@@ -47,6 +39,10 @@ function App() {
               </ProtectedRoute>
             }
           />
+         
+     
+
+          
 
           {/* Catch-all route: Redirect to login if not authenticated, otherwise dashboard */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
