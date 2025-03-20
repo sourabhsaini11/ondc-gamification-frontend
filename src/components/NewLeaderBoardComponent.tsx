@@ -1,18 +1,21 @@
 import { useState } from 'react'
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Separator } from './ui/separator'
 import { Loader2, Search, Trophy } from 'lucide-react'
 import { TableDemo } from './Table'
 import { Button } from '@/components/ui/button'
 import { useQuery } from 'react-query'
-import { dailyLeaderboard, weeklyLeaderboard, monthlyLeaderboard } from '@/http/route'
-import GameMechanics from './ui/Data'
-
+import { dailyLeaderboard, weeklyLeaderboard, monthlyLeaderboard, searchGameId } from '@/http/route'
+import { useDebounce } from 'use-debounce' 
 const FILTER_OPTIONS = ['Monthly', 'Weekly', 'Daily']
-
+import { Card, CardContent } from '@/components/ui/card'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip'
+import { useAuth } from '@/services/AuthContext'
 const NewLeaderBoardComponent = () => {
+  const { isAuthenticated } = useAuth()
   const [filter, setFilter] = useState('Monthly')
   const [searchTerm, setSearchTerm] = useState('')
+  const [debouncedSearch] = useDebounce(searchTerm, 500)
 
   const { data: dailyLeaders = [], isLoading: isDailyLoading } = useQuery({
     queryFn: dailyLeaderboard,
@@ -49,17 +52,15 @@ const NewLeaderBoardComponent = () => {
 
   const leaderboardData = getFilteredData()
   const topThree = leaderboardData.slice(0, 3)
-  const searchableLeaders = leaderboardData.filter((user: any) =>
-    searchTerm ? user.game_id?.toLowerCase().includes(searchTerm.toLowerCase()) : true,
+  const { data: searchResults = [],  } = useQuery(
+    ['search-game', debouncedSearch],
+    () => searchGameId(debouncedSearch),
+    { enabled: !!debouncedSearch }
   )
+  
 
   return (
-    <Tabs defaultValue="leaderboard" className="w-full">
-      <TabsList className="flex justify-center space-x-4 p-4 bg-gray-100 rounded-lg shadow">
-        <TabsTrigger value="leaderboard">Leaderboard</TabsTrigger>
-        <TabsTrigger value="rules">Game Rules</TabsTrigger>
-      </TabsList>
-      <TabsContent value="leaderboard">
+  
         <div className="flex rounded-lg flex-col justify-between bg-white">
           <div className="px-6 pt-6 pb-2">
             <div className="flex items-center gap-2 justify-center">
@@ -70,31 +71,34 @@ const NewLeaderBoardComponent = () => {
 
           {/* Top 3 Leaders */}
           <div className="top h-[30vh] flex gap-10 px-40 pt-72 pb-20 justify-center items-end">
-            {topThree.length > 0 ? (
-              topThree.map((user: any, index: any) => (
-                <div
-                  key={index}
-                  className={`group relative cursor-pointer flex flex-col justify-center items-center rounded-t-xl text-center ${HEIGHTS[index]} ${BG_CLASSES[index]} w-1/5 shadow-md shadow-gray-400`}
-                >
-                  <div className="absolute top-[-60px] text-sm">
-                    <div className="flex flex-col text-md justify-center">
-                      <span className="text-black">{user.game_id?.slice(0, 4) || ''}</span>
-                      <span className="text-gray-400">{user.total_points}</span>
+          {topThree.length > 0 ? (
+              [1, 0, 2].map((pos) => {
+                const user = topThree[pos]
+                return (
+                  <div
+                    key={pos}
+                    className={`group relative cursor-pointer flex flex-col justify-center items-center rounded-t-xl text-center ${HEIGHTS[pos]} ${BG_CLASSES[pos]} w-1/5 shadow-md shadow-gray-400`}
+                  >
+                    <div className="absolute top-[-60px] text-sm">
+                      <div className="flex flex-col text-md justify-center">
+                        <span className="text-black">{user?.game_id?.slice(0, 4) || ''}</span>
+                        <span className="text-gray-400">{user?.total_points}</span>
+                      </div>
+                    </div>
+                    <div
+                      className={`rounded-full w-20 h-20 border-2 bg-white font-bold text-2xl text-center flex flex-col justify-center ${
+                        pos === 1
+                          ? 'border-yellow-500 text-yellow-700'
+                          : pos === 0
+                          ? 'border-slate-500 text-slate-700'
+                          : 'border-red-300 text-red-400'
+                      }`}
+                    >
+                      {pos + 1}
                     </div>
                   </div>
-                  <div
-                    className={`rounded-full w-20 h-20 border-2 bg-white font-bold text-2xl text-center flex flex-col justify-center ${
-                      index === 0
-                        ? 'border-yellow-500 text-yellow-700'
-                        : index === 1
-                        ? 'border-slate-500 text-slate-700'
-                        : 'border-red-300 text-red-400'
-                    }`}
-                  >
-                    {index + 1}
-                  </div>
-                </div>
-              ))
+                )
+              })
             ) : (
               <div className="flex flex-col items-center text-gray-500 gap-3">
                 <Trophy className="w-16 h-16 text-gray-300" />
@@ -106,17 +110,50 @@ const NewLeaderBoardComponent = () => {
           {/* Bottom Section */}
           <div className="bottom h-[70vh] flex flex-col gap-4 mx-2">
             <div className="flex flex-col justify-center items-center mx-4 gap-4">
-              <div className="input-wrapper flex items-center justify-center rounded-xl px-4 tracking-wide gap-2 bg-gray-100 w-1/2 shadow-sm border border-gray-300 ">
-                <Search className="text-gray-500" />
-                <input
-                  type="text"
-                  placeholder="Search game ID"
-                  className="px-3 py-3 outline-none w-full bg-transparent text-gray-800 placeholder-gray-500"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
+            {
+  isAuthenticated && (
+    <div className="flex flex-col items-center w-full">
+      <div className="input-wrapper flex items-center justify-center rounded-xl px-4 tracking-wide gap-2 bg-gray-100 w-1/2 shadow-sm border border-gray-300 ">
+        <Search className="text-gray-500" />
+        <input
+          type="text"
+          placeholder="Search game ID"
+          className="px-3 py-3 outline-none w-full bg-transparent text-gray-800 placeholder-gray-500"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+      {searchResults.length > 0 && (
+        <TooltipProvider>
+          <Card className="w-1/2 mx-auto shadow-md bg-gray-50">
+            <CardContent className="p-4">
+              <p className="font-bold text-center text-gray-700 mb-2">Matching Game IDs</p>
+              <ScrollArea className="max-h-64 overflow-y-auto border rounded-lg p-2">
+                {searchResults.map((game: any) => (
+                  <Tooltip key={game.game_id}>
+                    <TooltipTrigger asChild>
+                      <div className="border-b py-2 px-4 hover:bg-gray-100 cursor-pointer transition-all rounded-lg">
+                        <p className="text-sm text-gray-800 truncate w-full">
+                          <span className="font-semibold">Game ID:</span> {game.game_id.slice(0, 10)}...
+                        </p>
+                        <p className="text-xs text-gray-600">
+                          <span className="font-semibold">Total Points:</span> {game.total_points}
+                        </p>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>{game.game_id}</TooltipContent>
+                  </Tooltip>
+                ))}
+              </ScrollArea>
+            </CardContent>
+          </Card>
+        </TooltipProvider>
+      )}
+    </div>
+  )
+}
 
+             
               {/* Horizontal Filter Buttons */}
               <div className="flex gap-2">
                 {FILTER_OPTIONS.map((option) => (
@@ -143,16 +180,12 @@ const NewLeaderBoardComponent = () => {
                   <Loader2 className="animate-spin" />
                 </div>
               ) : (
-                <TableDemo filter={filter} data={searchableLeaders} />
+                <TableDemo filter={filter} data={leaderboardData} />
               )}
             </div>
           </div>
         </div>
-      </TabsContent>
-      <TabsContent value="rules">
-        <GameMechanics />
-      </TabsContent>
-    </Tabs>
+
   )
 }
 

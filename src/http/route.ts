@@ -43,3 +43,9 @@ export const fileUpload = async (formdata : any) => {
   })
   return response.data
 }
+
+export const searchGameId = async (gameId: string) => {
+  if (!gameId) return null
+  const { data } = await axiosInstance.get(`/api/v1/orders/game/search?game_id=${gameId}`)
+  return data.data
+}
