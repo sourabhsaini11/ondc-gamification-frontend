@@ -119,7 +119,7 @@ const UserUploads = () => {
               <TableBody>
                 {uploads.map((order: any, index: any) => (
                   <TableRow key={order.id} sx={{ bgcolor: index % 2 === 0 ? '#fafafa' : 'white' }}>
-                    <TableCell>{order.game_id.slice(0, 7)}</TableCell>
+      
                     <TableCell>{order.order_id}</TableCell>
                     <TableCell>{order.game_id.slice(0, 4)}...</TableCell>
                     <TableCell>{order.name}</TableCell>

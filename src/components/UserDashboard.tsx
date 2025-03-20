@@ -19,6 +19,8 @@ import { useAuth } from '../services/AuthContext'
 
 
 import NewLeaderBoardComponent from './NewLeaderBoardComponent'
+import GameMechanics from './ui/Data'
+import { Gamepad2Icon } from 'lucide-react'
 
 const UserDashboard = () => {
   const {  logout } = useAuth()
@@ -49,6 +51,7 @@ const UserDashboard = () => {
         <List>
           <NavItem  to="/dashboard/upload" active={currentPage === 'upload'} text="Upload"  icon={<UploadFile />} onClick={() => setDrawerOpen(false)}  />
           <NavItem to="/dashboard/leaderboard" active={currentPage === 'leaderboard'}  text="Leaderboard" icon={<Dashboard />} onClick={() => setDrawerOpen(false)} />
+          <NavItem to="/dashboard/game-rules" active={currentPage === 'game-rules'}  text="Game Rule" icon={<Gamepad2Icon />} onClick={() => setDrawerOpen(false)} />
         </List>
 
         <Box sx={{ flexGrow: 1 }} />
@@ -101,6 +104,7 @@ const UserDashboard = () => {
             {/* <Route path="leaderboard" element={<Leaderboard />} /> */}
             <Route path="leaderboard" element={<NewLeaderBoardComponent />} />
             <Route path="upload" element={<FileUploadWrapper />} />
+            <Route path="game-rules" element={<GameMechanics />} />
           </Routes>
         </Box>
       </Box>

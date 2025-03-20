@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './services/AuthContext'
 import UserDashboard from './components/UserDashboard'
 import LoginPage from '../src/app/login/page'
+import NewLeaderBoardComponent from './components/NewLeaderBoardComponent'
 
 
 function ProtectedRoute({ children }: { children: JSX.Element }) {
@@ -39,6 +40,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/open-leaderboard" element={<NewLeaderBoardComponent />} />
          
      
 
