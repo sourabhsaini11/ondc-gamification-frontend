@@ -3,18 +3,29 @@ import { Button } from './ui/button'
 import UserUploads from './Uploads'
 
 const fields = [
-  "order_id",
-  "name",
-  "domain",
-  "total_price",
-  "timestamp_created",
-  "phone_number",
-  "order_status"
-]
+  "Name",
+  "Order ID",
+  "Order Status",
+  "Timestamp Created",
+  "Total Price",
+  "Phone Number",
+];
+
+const instructions = [
+  "user22",
+  "201-556-1019",
+  'On creation- "active"  When order is partially_cancelled="partially_cancelled"  When order is completely cancelled="cancelled"  No other statuses to be included',
+  'Date/Month/Year Hour:Minutes:Seconds 3/25/2025 12:03:00 This is the only format acceptable',
+  `Price including=base price+ convenience charges+ delivery charges+ other charges-discount offered eg:1500`,
+  `1st 3 digits+masking for next 3 digits+last 4 digits 733XXX1892`,
+];
 
 const downloadCSV = () => {
   const csvHeader = fields.join(",") + "\n";
-  const blob = new Blob([csvHeader], { type: "text/csv" });
+  const csvInstructions = instructions.join(",") + "\n";
+  const csvContent = csvHeader + csvInstructions;
+
+  const blob = new Blob([csvContent], { type: "text/csv" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
@@ -23,7 +34,8 @@ const downloadCSV = () => {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
-}
+};
+
 
 const FileUploadWrapper = () => {
   return (

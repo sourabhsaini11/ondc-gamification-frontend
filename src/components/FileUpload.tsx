@@ -6,6 +6,7 @@ import { fileUpload } from '@/http/route'
 const FileUpload = () => {
   const [file, setFile] = useState<File | null>(null)
   const [, setPreviewUrl] = useState<string | null>(null)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const queryClient = useQueryClient()
 
@@ -14,7 +15,9 @@ const FileUpload = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['uploads'] })
     },
-    onError: () => {},
+    onError: (error : any) => {
+      setErrorMessage(error.response.data.message)
+    },
   })
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,7 +78,7 @@ const FileUpload = () => {
       {uploadMutation.isSuccess && (
         <p className="mt-3 text-sm font-semibold text-green-600">✅ File uploaded successfully!</p>
       )}
-      {uploadMutation.isError && <p className="mt-3 text-sm font-semibold text-red-500">❌ Error uploading file.</p>}
+      {uploadMutation.isError && <p className="mt-3 text-sm font-semibold text-red-500">❌ {errorMessage}</p>}
     </div>
   )
 }
