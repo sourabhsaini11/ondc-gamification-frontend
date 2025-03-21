@@ -20,7 +20,11 @@ interface TableDemoProps {
   data: LeaderboardEntry[];
 }
 
-export function TableDemo({ filter, data }: TableDemoProps) {
+export function TableDemo({ filter, data = [] }: TableDemoProps) {
+  console.log("DATA IS: ", data);
+
+  const trimmedData = data.length > 9 ? data.slice(0, 9) : data;
+
   return (
     <div className="rounded-lg border border-gray-200 shadow-sm overflow-hidden">
       <Table className="min-w-full bg-white">
@@ -35,16 +39,16 @@ export function TableDemo({ filter, data }: TableDemoProps) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.length > 0 ? (
-            data.map((leader, index) => (
+          {trimmedData.length > 0 ? (
+            trimmedData.map((leader, index) => (
               <TableRow key={index} className="hover:bg-gray-50 transition">
                 <TableCell className="text-center font-medium">{index + 1}</TableCell>
                 <TableCell className="font-mono text-gray-800">
-                  {leader.game_id.slice(0, 4)}
+                  {leader.game_id?.slice(0, 4) ?? "N/A"}
                 </TableCell>
                 <TableCell className="text-right">
                   <span className="inline-block px-3 py-1 text-sm font-semibold text-gray-900 bg-gray-200 rounded-lg shadow">
-                    {leader.total_points}
+                    {leader.total_points || 0}
                   </span>
                 </TableCell>
               </TableRow>
