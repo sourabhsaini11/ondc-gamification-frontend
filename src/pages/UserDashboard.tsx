@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { NavLink, Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import React, { useState } from 'react';
+import { NavLink, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import {
   AppBar,
   Toolbar,
@@ -11,29 +11,22 @@ import {
   ListItemText,
   Box,
   IconButton,
-} from '@mui/material'
-import { Dashboard, UploadFile, Logout, Menu as MenuIcon } from '@mui/icons-material'
-import FileUploadWrapper from './FileUploadWrapper'
-
-import { useAuth } from '../services/AuthContext'
-
-
-import NewLeaderBoardComponent from './NewLeaderBoardComponent'
-import GameMechanics from './ui/Data'
-import { Gamepad2Icon } from 'lucide-react'
+} from '@mui/material';
+import { Dashboard, UploadFile, Logout, Menu as MenuIcon } from '@mui/icons-material';
+import FileUploadWrapper from '../components/FileUploadWrapper';
+import { useAuth } from '../services/AuthContext';
+import NewLeaderBoardComponent from '../components/NewLeaderBoardComponent';
+import GameMechanics from '../components/ui/Data';
+import { Gamepad2Icon } from 'lucide-react';
 
 const UserDashboard = () => {
-  const {  logout } = useAuth()
-  const [drawerOpen, setDrawerOpen] = useState(false)
-  const location = useLocation()
-  let currentPage = location.pathname.split('/')[2]
-
-  
+  const { logout } = useAuth();
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const location = useLocation();
+  let currentPage = location.pathname.split('/')[2];
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#f4f6f8' }}>
-
-      {/* Sidebar */}
       <Drawer
         variant="temporary"
         open={drawerOpen}
@@ -49,23 +42,23 @@ const UserDashboard = () => {
         </Toolbar>
 
         <List>
-          <NavItem  to="/dashboard/upload" active={currentPage === 'upload'} text="Upload"  icon={<UploadFile />} onClick={() => setDrawerOpen(false)}  />
-          <NavItem to="/dashboard/leaderboard" active={currentPage === 'leaderboard'}  text="Leaderboard" icon={<Dashboard />} onClick={() => setDrawerOpen(false)} />
-          <NavItem to="/dashboard/game-rules" active={currentPage === 'game-rules'}  text="Game Rule" icon={<Gamepad2Icon />} onClick={() => setDrawerOpen(false)} />
+          <NavItem to="/dashboard/upload" active={currentPage === 'upload'} text="Upload" icon={<UploadFile />} onClick={() => setDrawerOpen(false)} />
+          <NavItem to="/dashboard/leaderboard" active={currentPage === 'leaderboard'} text="Leaderboard" icon={<Dashboard />} onClick={() => setDrawerOpen(false)} />
+          <NavItem to="/dashboard/game-rules" active={currentPage === 'game-rules'} text="Game Rule" icon={<Gamepad2Icon />} onClick={() => setDrawerOpen(false)} />
         </List>
 
         <Box sx={{ flexGrow: 1 }} />
 
         <List>
           <ListItem component="button" onClick={logout} sx={{
-    color: 'white',
-    cursor: 'pointer',
-    backgroundColor: 'transparent',
-    borderRadius: 1,
-    '&:hover': {
-      backgroundColor: 'rgba(255, 255, 255, 0.2)', // Subtle highlight on hover
-    },
-  }}>
+            color: 'white',
+            cursor: 'pointer',
+            backgroundColor: 'transparent',
+            borderRadius: 1,
+            '&:hover': {
+              backgroundColor: 'rgba(255, 255, 255, 0.2)',
+            },
+          }}>
             <ListItemIcon>
               <Logout sx={{ color: 'white' }} />
             </ListItemIcon>
@@ -74,9 +67,7 @@ const UserDashboard = () => {
         </List>
       </Drawer>
 
-      {/* Main Content */}
       <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-        {/* Top Navbar */}
         <AppBar position="static" sx={{ bgcolor: '#4077cf', px: 3 }}>
           <Toolbar>
             <IconButton
@@ -89,19 +80,13 @@ const UserDashboard = () => {
               <MenuIcon />
             </IconButton>
             <Box sx={{ flexGrow: 1 }} />
-            {/* User Info with Icon */}
-            <Box sx={{ display: 'flex', alignItems: 'center', color: 'white', ml: 'auto', gap: 1 }}>
-           
-             
-            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', color: 'white', ml: 'auto', gap: 1 }} />
           </Toolbar>
         </AppBar>
 
-        {/* Page Content */}
         <Box sx={{ p: 2 }}>
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard/upload" />} />
-            {/* <Route path="leaderboard" element={<Leaderboard />} /> */}
             <Route path="leaderboard" element={<NewLeaderBoardComponent />} />
             <Route path="upload" element={<FileUploadWrapper />} />
             <Route path="game-rules" element={<GameMechanics />} />
@@ -109,21 +94,20 @@ const UserDashboard = () => {
         </Box>
       </Box>
     </Box>
-  )
-}
+  );
+};
 
-// Sidebar Navigation Item Component
 const NavItem = ({ to, text, icon, active, onClick }: { to: string; text: string; icon: React.ReactNode; active: boolean, onClick: any }) => (
   <ListItem
     component={NavLink}
     to={to}
     sx={{
-      color: active ? '#fff' : '#b0c4de', 
+      color: active ? '#fff' : '#b0c4de',
       textDecoration: 'none',
-      backgroundColor: active ? 'rgba(255, 255, 255, 0.2)' : 'transparent', 
+      backgroundColor: active ? 'rgba(255, 255, 255, 0.2)' : 'transparent',
       borderRadius: 1,
       '&:hover': {
-        backgroundColor: 'rgba(255, 255, 255, 0.1)', 
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
       },
     }}
     onClick={onClick}
@@ -133,6 +117,4 @@ const NavItem = ({ to, text, icon, active, onClick }: { to: string; text: string
   </ListItem>
 );
 
-
-
-export default UserDashboard
+export default UserDashboard;

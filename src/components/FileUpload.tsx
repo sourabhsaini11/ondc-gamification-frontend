@@ -1,57 +1,57 @@
-import React, { useState } from 'react'
-import { Loader2 } from 'lucide-react'
-import { useMutation, useQueryClient } from 'react-query'
-import { fileUpload } from '@/http/route'
+import React, { useState } from 'react';
+import { Loader2 } from 'lucide-react';
+import { useMutation, useQueryClient } from 'react-query';
+import { fileUpload } from '@/http/route';
 
 const FileUpload = () => {
-  const [file, setFile] = useState<File | null>(null)
-  const [, setPreviewUrl] = useState<string | null>(null)
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [file, setFile] = useState<File | null>(null);
+  const [, setPreviewUrl] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   const uploadMutation = useMutation({
     mutationFn: fileUpload,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['uploads'] })
+      queryClient.invalidateQueries({ queryKey: ['uploads'] });
     },
-    onError: (error : any) => {
-      setErrorMessage(error.response.data.message)
+    onError: (error: any) => {
+      setErrorMessage(error.response.data.message);
     },
-  })
+  });
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = event.target.files?.[0] || null
+    const selectedFile = event.target.files?.[0] || null;
 
     if (selectedFile) {
       if (selectedFile.type !== 'text/csv' && !selectedFile.name.endsWith('.csv')) {
-        alert('❌ Only CSV files are allowed.')
-        setFile(null)
-        setPreviewUrl(null)
-        return
+        alert('❌ Only CSV files are allowed.');
+        setFile(null);
+        setPreviewUrl(null);
+        return;
       }
 
-      setFile(selectedFile)
-      const fileURL = URL.createObjectURL(selectedFile)
-      setPreviewUrl(fileURL)
+      setFile(selectedFile);
+      const fileURL = URL.createObjectURL(selectedFile);
+      setPreviewUrl(fileURL);
     } else {
-      setFile(null)
-      setPreviewUrl(null)
+      setFile(null);
+      setPreviewUrl(null);
     }
-  }
+  };
 
   const handleUpload = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault()
+    event.preventDefault();
     if (!file) {
-      alert('❌ Please select a valid CSV file.')
-      return
+      alert('❌ Please select a valid CSV file.');
+      return;
     }
 
-    const formData = new FormData()
-    formData.append('file', file)
+    const formData = new FormData();
+    formData.append('file', file);
 
-    uploadMutation.mutate(formData)
-  }
+    uploadMutation.mutate(formData);
+  };
 
   return (
     <div className="flex flex-col items-center p-6 bg-gray-100 shadow-md rounded-xl w-full">
@@ -80,7 +80,7 @@ const FileUpload = () => {
       )}
       {uploadMutation.isError && <p className="mt-3 text-sm font-semibold text-red-500">❌ {errorMessage}</p>}
     </div>
-  )
-}
+  );
+};
 
-export default FileUpload
+export default FileUpload;

@@ -21,8 +21,6 @@ interface TableDemoProps {
 }
 
 export function TableDemo({ filter, data = [] }: TableDemoProps) {
-  console.log("DATA IS: ", data);
-
   const trimmedData = data.length > 9 ? data.slice(0, 9) : data;
 
   return (

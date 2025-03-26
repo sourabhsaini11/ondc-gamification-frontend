@@ -1,88 +1,83 @@
-import { useState, useEffect } from 'react'
-import { Separator } from './ui/separator'
-import { Loader2, Search, Trophy } from 'lucide-react'
-import { TableDemo } from './Table'
-import { Button } from '@/components/ui/button'
-import { useQuery } from 'react-query'
-import { dailyLeaderboard, weeklyLeaderboard, monthlyLeaderboard, searchGameId } from '@/http/route'
-import { useDebounce } from 'use-debounce' 
-const FILTER_OPTIONS = ['Monthly', 'Weekly', 'Daily']
-import { useAuth } from '@/services/AuthContext'
+import { useState, useEffect } from 'react';
+import { Separator } from './ui/separator';
+import { Loader2, Search, Trophy } from 'lucide-react';
+import { TableDemo } from './Table';
+import { Button } from '@/components/ui/button';
+import { useQuery } from 'react-query';
+import { dailyLeaderboard, weeklyLeaderboard, monthlyLeaderboard, searchGameId } from '@/http/route';
+import { useDebounce } from 'use-debounce';
+import { useAuth } from '@/services/AuthContext';
+
+const FILTER_OPTIONS = ['Monthly', 'Weekly', 'Daily'];
 
 const NewLeaderBoardComponent = () => {
-  const { isAuthenticated } = useAuth()
-  const [filter, setFilter] = useState('Monthly')
-  const [searchTerm, setSearchTerm] = useState('')
-  const [debouncedSearch] = useDebounce(searchTerm, 500)
-  const isSearchActive = !!debouncedSearch
-  
+  const { isAuthenticated } = useAuth();
+  const [filter, setFilter] = useState('Monthly');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [debouncedSearch] = useDebounce(searchTerm, 500);
+  const isSearchActive = !!debouncedSearch;
+
   const { data: dailyLeaders = [], isLoading: isDailyLoading } = useQuery({
     queryFn: dailyLeaderboard,
     queryKey: ['daily-leaders'],
-  })
+  });
+
   const { data: weeklyLeaders = [], isLoading: isWeeklyLoading } = useQuery({
     queryFn: weeklyLeaderboard,
     queryKey: ['weekly-leaders'],
-  })
+  });
+
   const { data: monthlyLeaders = [], isLoading: isMonthlyLoading } = useQuery({
     queryFn: monthlyLeaderboard,
     queryKey: ['monthly-leaders'],
-  })
+  });
 
-  // Refetch search when filter changes by including filter in the query key
   const { data: searchResults = [], isLoading: isSearchLoading, refetch: refetchSearch } = useQuery(
     ['search-game', debouncedSearch, filter],
     () => searchGameId(debouncedSearch, filter.toLowerCase()),
-    { 
+    {
       enabled: isSearchActive,
-      // Ensure we refetch when filter changes even if debouncedSearch hasn't changed
       refetchOnMount: true,
-      refetchOnWindowFocus: false
+      refetchOnWindowFocus: false,
     }
-  )
+  );
 
-  // Refetch search results when filter changes but search is active
   useEffect(() => {
     if (isSearchActive) {
       refetchSearch();
     }
   }, [filter, isSearchActive, refetchSearch]);
 
-  const HEIGHTS = ['h-48', 'h-36', 'h-28']
+  const HEIGHTS = ['h-48', 'h-36', 'h-28'];
   const BG_CLASSES = [
     'bg-yellow-100/70 border border-yellow-200',
     'bg-slate-100/80 border border-gray-200',
     'bg-red-100/90 border border-red-400',
-  ]
+  ];
 
   const getFilteredData = () => {
-    // If search is active, return search results
     if (isSearchActive) {
-      return searchResults
+      return searchResults;
     }
-    
-    // Otherwise return data based on filter
+
     switch (filter) {
       case 'Daily':
-        return dailyLeaders
+        return dailyLeaders;
       case 'Weekly':
-        return weeklyLeaders
+        return weeklyLeaders;
       case 'Monthly':
-        return monthlyLeaders
+        return monthlyLeaders;
       default:
-        return []
+        return [];
     }
-  }
+  };
 
-  const tableData = getFilteredData()
-  // Only show top three when not searching
-  const topThree = isSearchActive ? [] : (filter === 'Daily' ? dailyLeaders : filter === 'Weekly' ? weeklyLeaders : monthlyLeaders).slice(0, 3)
+  const tableData = getFilteredData();
+  const topThree = isSearchActive ? [] : (filter === 'Daily' ? dailyLeaders : filter === 'Weekly' ? weeklyLeaders : monthlyLeaders).slice(0, 3);
 
   const handleFilterChange = (newFilter: string) => {
-    setFilter(newFilter)
-    // No need to explicitly call refetchSearch here
-    // The useEffect will handle refetching if search is active
-  }
+    setFilter(newFilter);
+  };
 
   return (
     <div className="flex rounded-lg flex-col justify-between bg-white">
@@ -95,11 +90,10 @@ const NewLeaderBoardComponent = () => {
         <Separator className="my-4" />
       </div>
 
-      {/* Top 3 Leaders */}
       <div className="top h-[30vh] flex gap-10 px-40 pt-72 pb-20 justify-center items-end">
         {topThree.length > 0 ? (
           [1, 0, 2].map((pos) => {
-            const user = topThree[pos]
+            const user = topThree[pos];
             return (
               <div
                 key={pos}
@@ -123,7 +117,7 @@ const NewLeaderBoardComponent = () => {
                   {pos + 1}
                 </div>
               </div>
-            )
+            );
           })
         ) : (
           <div className="flex flex-col items-center text-gray-500 gap-3">
@@ -133,7 +127,6 @@ const NewLeaderBoardComponent = () => {
         )}
       </div>
 
-      {/* Bottom Section */}
       <div className="bottom h-[70vh] flex flex-col gap-4 mx-2">
         <div className="flex flex-col justify-center items-center mx-4 gap-4">
           {isAuthenticated && (
@@ -151,7 +144,6 @@ const NewLeaderBoardComponent = () => {
             </div>
           )}
 
-          {/* Horizontal Filter Buttons */}
           <div className="flex gap-2">
             {FILTER_OPTIONS.map((option) => (
               <Button
@@ -163,7 +155,6 @@ const NewLeaderBoardComponent = () => {
                     : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-200'
                 }`}
                 onClick={() => handleFilterChange(option)}
-                // Keep filter buttons enabled even during search
               >
                 {option}
               </Button>
@@ -171,7 +162,6 @@ const NewLeaderBoardComponent = () => {
           </div>
         </div>
 
-        {/* Leaderboard Table */}
         <div className="table w-full h-full bg-white p-2 rounded-xl">
           {isDailyLoading || isWeeklyLoading || isMonthlyLoading || (isSearchActive && isSearchLoading) ? (
             <div className="flex justify-center flex-col items-center">
@@ -183,7 +173,7 @@ const NewLeaderBoardComponent = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default NewLeaderBoardComponent
+export default NewLeaderBoardComponent;
