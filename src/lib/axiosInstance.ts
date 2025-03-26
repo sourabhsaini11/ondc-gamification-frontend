@@ -1,13 +1,13 @@
 import axios from 'axios'
 
 const axiosInstance = axios.create({
-  baseURL: `https://gamification-node-backend-dev.thewitslab.com`,
+  baseURL: `https://gamification-node-backend-dev.thewitslab.com/`,
 
   headers: { 'Content-Type': 'application/json' },
   timeout: 15000,
 })
 
-// Request Interceptor
+
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token')

@@ -1,18 +1,17 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
-import { AuthProvider, useAuth } from './services/AuthContext'
-import UserDashboard from './components/UserDashboard'
-import LoginPage from '../src/app/login/page'
-import NewLeaderBoardComponent from './components/NewLeaderBoardComponent'
-
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './services/AuthContext';
+import UserDashboard from './pages/UserDashboard';
+import LoginPage from './pages/Login';
+import NewLeaderBoardComponent from './components/NewLeaderBoardComponent';
 
 function ProtectedRoute({ children }: { children: JSX.Element }) {
-  const { isAuthenticated } = useAuth()
-  return isAuthenticated ? children : <Navigate to="/login" replace />
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? children : <Navigate to="/login" replace />;
 }
 
 function AuthRedirect({ children }: { children: JSX.Element }) {
-  const { isAuthenticated } = useAuth()
-  return isAuthenticated ? <Navigate to="/dashboard" replace /> : children
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? <Navigate to="/dashboard" replace /> : children;
 }
 
 function App() {
@@ -20,7 +19,6 @@ function App() {
     <AuthProvider>
       <Router>
         <Routes>
-          {/* Redirect to dashboard if already logged in */}
           <Route
             path="/login"
             element={
@@ -29,9 +27,6 @@ function App() {
               </AuthRedirect>
             }
           />
-
-         
-          {/* Dashboard Route with Subroutes */}
           <Route
             path="/dashboard/*"
             element={
@@ -41,17 +36,11 @@ function App() {
             }
           />
           <Route path="/open-leaderboard" element={<NewLeaderBoardComponent />} />
-         
-     
-
-          
-
-          {/* Catch-all route: Redirect to login if not authenticated, otherwise dashboard */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </Router>
     </AuthProvider>
-  )
+  );
 }
 
-export default App
+export default App;
