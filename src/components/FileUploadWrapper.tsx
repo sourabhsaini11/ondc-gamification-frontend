@@ -5,7 +5,7 @@ import UserUploads from './Uploads';
 const fields = [
   "Order ID",
   "Order Status",
-  "Created Date",
+  "Timestamp Created",
   "Total Price",
   "Phone Number",
 ];
