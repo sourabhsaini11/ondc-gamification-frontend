@@ -53,14 +53,14 @@ const UserDashboard = () => {
           <NavItem
             to="/dashboard/leaderboard"
             active={currentPage === 'leaderboard'}
-            text="Leaderboard"
+            text="Old Leaderboard"
             icon={<Dashboard />}
             onClick={() => setDrawerOpen(false)}
           />
           <NavItem
             to="/dashboard/leaderboard2"
             active={currentPage === 'leaderboard2'}
-            text="Leaderboard2"
+            text="Leaderboard"
             icon={<Dashboard />}
             onClick={() => setDrawerOpen(false)}
           />
