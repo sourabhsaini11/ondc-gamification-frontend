@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { NavLink, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import React, { useState } from 'react'
+import { NavLink, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import {
   AppBar,
   Toolbar,
@@ -11,19 +11,20 @@ import {
   ListItemText,
   Box,
   IconButton,
-} from '@mui/material';
-import { Dashboard, UploadFile, Logout, Menu as MenuIcon } from '@mui/icons-material';
-import FileUploadWrapper from '../components/FileUploadWrapper';
-import { useAuth } from '../services/AuthContext';
-import NewLeaderBoardComponent from '../components/NewLeaderBoardComponent';
-import GameMechanics from '../components/ui/Data';
-import { Gamepad2Icon } from 'lucide-react';
+} from '@mui/material'
+import { Dashboard, UploadFile, Logout, Menu as MenuIcon } from '@mui/icons-material'
+import FileUploadWrapper from '../components/FileUploadWrapper'
+import { useAuth } from '../services/AuthContext'
+import NewLeaderBoardComponent from '../components/NewLeaderBoardComponent'
+import NewLeaderBoardComponent2 from '../components/NewLeaderBoardComponent2'
+import GameMechanics from '../components/ui/Data'
+import { Gamepad2Icon } from 'lucide-react'
 
 const UserDashboard = () => {
-  const { logout } = useAuth();
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const location = useLocation();
-  let currentPage = location.pathname.split('/')[2];
+  const { logout } = useAuth()
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const location = useLocation()
+  const currentPage = location.pathname.split('/')[2]
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#f4f6f8' }}>
@@ -42,23 +43,52 @@ const UserDashboard = () => {
         </Toolbar>
 
         <List>
-          <NavItem to="/dashboard/upload" active={currentPage === 'upload'} text="Upload" icon={<UploadFile />} onClick={() => setDrawerOpen(false)} />
-          <NavItem to="/dashboard/leaderboard" active={currentPage === 'leaderboard'} text="Leaderboard" icon={<Dashboard />} onClick={() => setDrawerOpen(false)} />
-          <NavItem to="/dashboard/game-rules" active={currentPage === 'game-rules'} text="Game Rule" icon={<Gamepad2Icon />} onClick={() => setDrawerOpen(false)} />
+          <NavItem
+            to="/dashboard/upload"
+            active={currentPage === 'upload'}
+            text="Upload"
+            icon={<UploadFile />}
+            onClick={() => setDrawerOpen(false)}
+          />
+          <NavItem
+            to="/dashboard/leaderboard"
+            active={currentPage === 'leaderboard'}
+            text="Leaderboard"
+            icon={<Dashboard />}
+            onClick={() => setDrawerOpen(false)}
+          />
+          <NavItem
+            to="/dashboard/leaderboard2"
+            active={currentPage === 'leaderboard2'}
+            text="Leaderboard2"
+            icon={<Dashboard />}
+            onClick={() => setDrawerOpen(false)}
+          />
+          <NavItem
+            to="/dashboard/game-rules"
+            active={currentPage === 'game-rules'}
+            text="Game Rule"
+            icon={<Gamepad2Icon />}
+            onClick={() => setDrawerOpen(false)}
+          />
         </List>
 
         <Box sx={{ flexGrow: 1 }} />
 
         <List>
-          <ListItem component="button" onClick={logout} sx={{
-            color: 'white',
-            cursor: 'pointer',
-            backgroundColor: 'transparent',
-            borderRadius: 1,
-            '&:hover': {
-              backgroundColor: 'rgba(255, 255, 255, 0.2)',
-            },
-          }}>
+          <ListItem
+            component="button"
+            onClick={logout}
+            sx={{
+              color: 'white',
+              cursor: 'pointer',
+              backgroundColor: 'transparent',
+              borderRadius: 1,
+              '&:hover': {
+                backgroundColor: 'rgba(255, 255, 255, 0.2)',
+              },
+            }}
+          >
             <ListItemIcon>
               <Logout sx={{ color: 'white' }} />
             </ListItemIcon>
@@ -88,16 +118,29 @@ const UserDashboard = () => {
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard/upload" />} />
             <Route path="leaderboard" element={<NewLeaderBoardComponent />} />
+            <Route path="leaderboard2" element={<NewLeaderBoardComponent2 />} />
             <Route path="upload" element={<FileUploadWrapper />} />
             <Route path="game-rules" element={<GameMechanics />} />
           </Routes>
         </Box>
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-const NavItem = ({ to, text, icon, active, onClick }: { to: string; text: string; icon: React.ReactNode; active: boolean, onClick: any }) => (
+const NavItem = ({
+  to,
+  text,
+  icon,
+  active,
+  onClick,
+}: {
+  to: string
+  text: string
+  icon: React.ReactNode
+  active: boolean
+  onClick: any
+}) => (
   <ListItem
     component={NavLink}
     to={to}
@@ -115,6 +158,6 @@ const NavItem = ({ to, text, icon, active, onClick }: { to: string; text: string
     <ListItemIcon sx={{ color: active ? '#fff' : '#b0c4de' }}>{icon}</ListItemIcon>
     <ListItemText primary={text} />
   </ListItem>
-);
+)
 
-export default UserDashboard;
+export default UserDashboard
