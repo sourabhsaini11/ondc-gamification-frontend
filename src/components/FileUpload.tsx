@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Loader2 } from 'lucide-react';
 import { useMutation, useQueryClient } from 'react-query';
 import { fileUpload } from '@/http/route';
@@ -7,6 +7,7 @@ const FileUpload = () => {
   const [file, setFile] = useState<File | null>(null);
   const [, setPreviewUrl] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const queryClient = useQueryClient();
 
@@ -14,6 +15,8 @@ const FileUpload = () => {
     mutationFn: fileUpload,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['uploads'] });
+      setFile(null);
+      if (fileInputRef.current) fileInputRef.current.value = ''; 
     },
     onError: (error: any) => {
       setErrorMessage(error.response.data.message);
@@ -28,6 +31,7 @@ const FileUpload = () => {
         alert('❌ Only CSV files are allowed.');
         setFile(null);
         setPreviewUrl(null);
+        event.target.value = ''; 
         return;
       }
 
@@ -57,7 +61,13 @@ const FileUpload = () => {
     <div className="flex flex-col items-center p-6 bg-gray-100 shadow-md rounded-xl w-full">
       <label className="w-full flex flex-col items-center px-4 py-6 bg-blue-50 border-2 border-dashed border-blue-300 rounded-lg cursor-pointer hover:bg-blue-100 transition duration-200">
         <span className="text-blue-700 font-medium">Click to select a CSV file</span>
-        <input type="file" accept=".csv" className="hidden" onChange={handleFileChange} />
+        <input
+          type="file"
+          accept=".csv"
+          className="hidden"
+          onChange={handleFileChange}
+          ref={fileInputRef} 
+        />
       </label>
 
       {file && (
