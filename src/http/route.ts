@@ -65,6 +65,10 @@ export const searchGameId = async (gameId: string, filter: string) => {
   return data.data
 }
 
+export const downloadLeaderboard = async(filter: string) => {
+  const response = await axiosInstance.get(`api/v1/orders/download-leaderboard?choice=${filter}`)
+  return response.data
+}
 export const searchGameId2 = async (gameId: string, filter: string) => {
   if (!gameId) return null
   const { data } = await axiosInstance.get(`/api/v1/orders/search2?format=${filter}&game_id=${gameId}`)

@@ -3,8 +3,8 @@ import { Separator } from './ui/separator'
 import { Loader2, Search, Trophy } from 'lucide-react'
 import { TableDemo } from './Table'
 import { Button } from '@/components/ui/button'
-import { useQuery } from 'react-query'
-import { dailyLeaderboard2, weeklyLeaderboard2, monthlyLeaderboard2, searchGameId2 } from '@/http/route'
+import { useQuery, useMutation } from 'react-query'
+import { dailyLeaderboard2, weeklyLeaderboard2, monthlyLeaderboard2, searchGameId2, downloadLeaderboard } from '@/http/route'
 import { useDebounce } from 'use-debounce'
 import { useAuth } from '@/services/AuthContext'
 
@@ -78,7 +78,43 @@ const NewLeaderBoardComponent2 = () => {
     : (filter === 'Daily' ? dailyLeaders : filter === 'Weekly' ? weeklyLeaders : monthlyLeaders).slice(0, 3)
 
   const handleFilterChange = (newFilter: string) => {
-    setFilter(newFilter)
+    setFilter(newFilter);
+  };
+  const downloadMutation = useMutation({
+    mutationFn: downloadLeaderboard,
+  
+    onSuccess: (data: any) => {
+      const results = data.data.result || [];
+  
+      const csvRows = [
+        ['game_id', 'total_points', 'total_orders', 'buyer_app'], 
+        ...results.map((item: any) => [
+          item.game_id,
+          item.total_points?.d?.[0] ?? '',
+          item.total_orders ?? '',
+          item.buyer_app_id ?? '', 
+        ]),
+      ];
+  
+      const csvContent = csvRows.map((row) => row.join(',')).join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+  
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'leaderboard.csv';
+      a.click();
+  
+      window.URL.revokeObjectURL(url);
+    },
+  
+    onError: (error: any) => {
+      console.error('Error downloading leaderboard:', error);
+    },
+  });
+  
+  const handleLeaderboardDownload = (filter: string) => {
+    downloadMutation.mutate(filter);
   }
 
   return (
@@ -146,6 +182,7 @@ const NewLeaderBoardComponent2 = () => {
             </div>
           )}
 
+<div className="flex justify-center relative w-full">
           <div className="flex gap-2">
             {FILTER_OPTIONS.map((option) => (
               <Button
@@ -162,6 +199,16 @@ const NewLeaderBoardComponent2 = () => {
               </Button>
             ))}
           </div>
+
+  <Button
+    className="absolute right-0 px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 shadow-md"
+    onClick={()=> handleLeaderboardDownload(filter)}
+  >
+    Download
+  </Button>
+</div>
+
+
         </div>
 
         <div className="table w-full h-full bg-white p-2 rounded-xl">
