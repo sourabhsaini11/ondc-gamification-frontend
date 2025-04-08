@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from 'react'
 import {
   Table,
   TableBody,
@@ -10,58 +10,58 @@ import {
   Button,
   Typography,
   Box,
-} from '@mui/material';
-import axiosInstance from '@/lib/axiosInstance';
-import { Download, Loader2 } from 'lucide-react';
-import { useMutation, useQuery } from 'react-query';
+} from '@mui/material'
+import axiosInstance from '@/lib/axiosInstance'
+import { Download, Loader2 } from 'lucide-react'
+import { useMutation, useQuery } from 'react-query'
 
 const UserUploads = () => {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(1)
 
-  const UPLOADS_QUERY_KEY = ['uploads', page];
+  const UPLOADS_QUERY_KEY = ['uploads', page]
 
   const fetchUploads = async () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token')
     const res = await axiosInstance.get(`/api/v1/orders/uploads?page=${page}&limit=10`, {
       headers: { Authorization: `Bearer ${token}` },
-    });
-    return res.data;
-  };
+    })
+    return res.data
+  }
 
   const { data, isLoading, error } = useQuery({
     queryKey: UPLOADS_QUERY_KEY,
     queryFn: fetchUploads,
     staleTime: 5 * 60 * 1000,
-  });
+  })
 
-  const uploads = data?.data || [];
-  const totalPages = data?.pagination?.totalPages || 1;
+  const uploads = data?.data || []
+  const totalPages = data?.pagination?.totalPages || 1
 
   const downloadCSVMutation = useMutation({
     mutationFn: async () => {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token')
       const res = await axiosInstance.get(`/api/v1/orders/download-csv`, {
         headers: { Authorization: `Bearer ${token}` },
         responseType: 'blob',
-      });
-      return res.data;
+      })
+      return res.data
     },
     onSuccess: (data) => {
-      const url = window.URL.createObjectURL(new Blob([data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', 'uploads.csv');
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      const url = window.URL.createObjectURL(new Blob([data]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', 'uploads.csv')
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
     },
     onError: (error) => {
-      console.error('Error downloading CSV:', error);
+      console.error('Error downloading CSV:', error)
     },
-  });
+  })
 
   if (error) {
-    console.error('Error fetching uploads:', error);
+    console.error('Error fetching uploads:', error)
   }
 
   return (
@@ -104,21 +104,19 @@ const UserUploads = () => {
             <Table>
               <TableHead sx={{ bgcolor: '#4077cf' }}>
                 <TableRow>
-                  {['Order ID', 'Game ID', 'Name', 'Total Price', 'Status', 'Phone', 'Timestamp Created'].map(
-                    (header) => (
-                      <TableCell key={header} sx={{ color: 'white', fontWeight: 'bold' }}>
-                        {header}
-                      </TableCell>
-                    ),
-                  )}
+                  {['Order ID', 'Game ID', 'Total Price', 'Status', 'Phone', 'Timestamp Created'].map((header) => (
+                    <TableCell key={header} sx={{ color: 'white', fontWeight: 'bold' }}>
+                      {header}
+                    </TableCell>
+                  ))}
                 </TableRow>
               </TableHead>
               <TableBody>
                 {uploads.map((order: any, index: any) => (
                   <TableRow key={order.id} sx={{ bgcolor: index % 2 === 0 ? '#fafafa' : 'white' }}>
                     <TableCell>{order.order_id}</TableCell>
-                    <TableCell>{order.game_id.slice(0, 4)}...</TableCell>
-                    <TableCell>{order.name}</TableCell>
+                    <TableCell>{order.game_id.slice(0, 9)}...</TableCell>
+                    {/* <TableCell>{order.name}</TableCell> */}
                     <TableCell>{order.total_price}</TableCell>
                     <TableCell>{order.order_status}</TableCell>
                     <TableCell>{order.uid}</TableCell>
@@ -136,8 +134,8 @@ const UserUploads = () => {
         </Typography>
       )}
     </Paper>
-  );
-};
+  )
+}
 
 const PaginationControls = ({ page, totalPages, setPage }: { page: any; totalPages: any; setPage: any }) => (
   <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px', mt: 3 }}>
@@ -161,6 +159,6 @@ const PaginationControls = ({ page, totalPages, setPage }: { page: any; totalPag
       Next
     </Button>
   </Box>
-);
+)
 
-export default UserUploads;
+export default UserUploads

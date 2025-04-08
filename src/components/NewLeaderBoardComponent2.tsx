@@ -4,13 +4,13 @@ import { Loader2, Search, Trophy } from 'lucide-react'
 import { TableDemo } from './Table'
 import { Button } from '@/components/ui/button'
 import { useQuery } from 'react-query'
-import { dailyLeaderboard, weeklyLeaderboard, monthlyLeaderboard, searchGameId } from '@/http/route'
+import { dailyLeaderboard2, weeklyLeaderboard2, monthlyLeaderboard2, searchGameId2 } from '@/http/route'
 import { useDebounce } from 'use-debounce'
 import { useAuth } from '@/services/AuthContext'
 
 const FILTER_OPTIONS = ['Monthly', 'Weekly', 'Daily']
 
-const NewLeaderBoardComponent = () => {
+const NewLeaderBoardComponent2 = () => {
   const { isAuthenticated } = useAuth()
   const [filter, setFilter] = useState('Monthly')
   const [searchTerm, setSearchTerm] = useState('')
@@ -18,25 +18,25 @@ const NewLeaderBoardComponent = () => {
   const isSearchActive = !!debouncedSearch
 
   const { data: dailyLeaders = [], isLoading: isDailyLoading } = useQuery({
-    queryFn: dailyLeaderboard,
-    queryKey: ['daily-leaders'],
+    queryFn: dailyLeaderboard2,
+    queryKey: ['daily-leaders2'],
   })
 
   const { data: weeklyLeaders = [], isLoading: isWeeklyLoading } = useQuery({
-    queryFn: weeklyLeaderboard,
-    queryKey: ['weekly-leaders'],
+    queryFn: weeklyLeaderboard2,
+    queryKey: ['weekly-leaders2'],
   })
 
   const { data: monthlyLeaders = [], isLoading: isMonthlyLoading } = useQuery({
-    queryFn: monthlyLeaderboard,
-    queryKey: ['monthly-leaders'],
+    queryFn: monthlyLeaderboard2,
+    queryKey: ['monthly-leaders2'],
   })
 
   const {
     data: searchResults = [],
     isLoading: isSearchLoading,
     refetch: refetchSearch,
-  } = useQuery(['search-game', debouncedSearch, filter], () => searchGameId(debouncedSearch, filter.toLowerCase()), {
+  } = useQuery(['search-game2', debouncedSearch, filter], () => searchGameId2(debouncedSearch, filter.toLowerCase()), {
     enabled: isSearchActive,
     refetchOnMount: true,
     refetchOnWindowFocus: false,
@@ -178,4 +178,4 @@ const NewLeaderBoardComponent = () => {
   )
 }
 
-export default NewLeaderBoardComponent
+export default NewLeaderBoardComponent2
