@@ -50,13 +50,13 @@ const UserDashboard = () => {
             icon={<UploadFile />}
             onClick={() => setDrawerOpen(false)}
           />
-          <NavItem
+          {/* <NavItem
             to="/dashboard/leaderboard"
             active={currentPage === 'leaderboard'}
             text="Old Leaderboard"
             icon={<Dashboard />}
             onClick={() => setDrawerOpen(false)}
-          />
+          /> */}
           <NavItem
             to="/dashboard/leaderboard2"
             active={currentPage === 'leaderboard2'}
