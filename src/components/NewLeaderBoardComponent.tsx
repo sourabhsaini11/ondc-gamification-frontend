@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react'
-// eslint-disable-next-line prettier/prettier
 import { Separator } from './ui/separator'
 import { Loader2, Search, Trophy } from 'lucide-react'
 import { TableDemo } from './Table'
 import { Button } from '@/components/ui/button'
-import { useMutation, useQuery } from 'react-query'
+import { useQuery, useMutation } from 'react-query'
 import {
   dailyLeaderboard,
   weeklyLeaderboard,

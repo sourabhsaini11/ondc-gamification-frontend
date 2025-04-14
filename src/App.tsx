@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './services/AuthContext';
 import UserDashboard from './pages/UserDashboard';
 import LoginPage from './pages/Login';
-import NewLeaderBoardComponent from './components/NewLeaderBoardComponent';
+import NewLeaderBoardComponent from './components/NewLeaderBoardComponent'
 
 function ProtectedRoute({ children }: { children: JSX.Element }) {
   const { isAuthenticated } = useAuth();

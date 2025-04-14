@@ -16,7 +16,6 @@ import { Dashboard, UploadFile, Logout, Menu as MenuIcon } from '@mui/icons-mate
 import FileUploadWrapper from '../components/FileUploadWrapper'
 import { useAuth } from '../services/AuthContext'
 import NewLeaderBoardComponent from '../components/NewLeaderBoardComponent'
-import NewLeaderBoardComponent2 from '../components/NewLeaderBoardComponent2'
 import GameMechanics from '../components/ui/Data'
 import { Gamepad2Icon } from 'lucide-react'
 
@@ -117,8 +116,7 @@ const UserDashboard = () => {
         <Box sx={{ p: 2 }}>
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard/upload" />} />
-            <Route path="leaderboard" element={<NewLeaderBoardComponent />} />
-            <Route path="leaderboard2" element={<NewLeaderBoardComponent2 />} />
+            <Route path="leaderboard2" element={<NewLeaderBoardComponent />} />
             <Route path="upload" element={<FileUploadWrapper />} />
             <Route path="game-rules" element={<GameMechanics />} />
           </Routes>

@@ -32,21 +32,6 @@ export const monthlyLeaderboard = async () => {
   return response.data.data.body
 }
 
-export const dailyLeaderboard2 = async () => {
-  const response = await axiosInstance.get(`/api/v1/orders/daily-leaderboard2?date=${getPreviousDate()}`)
-  return response.data.data.body
-}
-
-export const weeklyLeaderboard2 = async () => {
-  const response = await axiosInstance.get(`/api/v1/orders/week-leaderboard2?date=${getPreviousDate()}`)
-  return response.data.data.body
-}
-
-export const monthlyLeaderboard2 = async () => {
-  const response = await axiosInstance.get(`/api/v1/orders/month-leaderboard2?date=${getPreviousDate()}`)
-  return response.data.data.body
-}
-
 export const allTimeLeaders = async () => {
   const response = await axiosInstance.get(`/api/v1/orders/alltime-leaderboard?date=${getPreviousDate()}`)
   return response.data.data.body
@@ -59,18 +44,12 @@ export const fileUpload = async (formdata: any) => {
   return response.data
 }
 
-export const searchGameId = async (gameId: string, filter: string) => {
-  if (!gameId) return null
-  const { data } = await axiosInstance.get(`/api/v1/orders/search?format=${filter}&game_id=${gameId}`)
-  return data.data
-}
-
 export const downloadLeaderboard = async(filter: string) => {
   const response = await axiosInstance.get(`api/v1/orders/download-leaderboard?choice=${filter}`)
   return response.data
 }
-export const searchGameId2 = async (gameId: string, filter: string) => {
+export const searchGameId = async (gameId: string, filter: string) => {
   if (!gameId) return null
-  const { data } = await axiosInstance.get(`/api/v1/orders/search2?format=${filter}&game_id=${gameId}`)
+  const { data } = await axiosInstance.get(`/api/v1/orders/search?format=${filter}&game_id=${gameId}`)
   return data.data
 }
