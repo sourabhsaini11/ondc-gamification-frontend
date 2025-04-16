@@ -1,11 +1,14 @@
 version: "3"
 services:
   frontend:
-    container_name: gamafication-node-frontend
+    container_name: ${SERVICE_NAME:-gamafication-frontend}
     build: .
     ports:
-      - 5173:5173
+      - ${HOST_PORT:-5173}:5173
     restart: always
-    environment:
-      VITE_BACKEND_URI: https://gamification-node-backend-dev.thewitslab.com
+    networks:
+      - gamafication-network-dev
 
+networks:
+  gamafication-network-dev:
+    driver: bridge
