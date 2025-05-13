@@ -33,17 +33,17 @@ export const monthlyLeaderboard = async () => {
 }
 
 export const dailyLeaderboard2 = async () => {
-  const response = await axiosInstance.get(`/api/v1/orders/daily-leaderboard2?date=${getPreviousDate()}`)
+  const response = await axiosInstance.get(`/api/v1/orders/daily-leaderboard?date=${getPreviousDate()}`)
   return response.data.data.body
 }
 
 export const weeklyLeaderboard2 = async () => {
-  const response = await axiosInstance.get(`/api/v1/orders/week-leaderboard2?date=${getPreviousDate()}`)
+  const response = await axiosInstance.get(`/api/v1/orders/week-leaderboard?date=${getPreviousDate()}`)
   return response.data.data.body
 }
 
 export const monthlyLeaderboard2 = async () => {
-  const response = await axiosInstance.get(`/api/v1/orders/month-leaderboard2?date=${getPreviousDate()}`)
+  const response = await axiosInstance.get(`/api/v1/orders/month-leaderboard?date=${getPreviousDate()}`)
   return response.data.data.body
 }
 
